@@ -1,8 +1,4 @@
-// Import styles of packages that you've installed.
-// All packages except `@mantine/hooks` require styles imports
-import "@mantine/core/styles.css";
-import "@mantine/dates/styles.css";
-
+import "./App.css";
 import "dayjs/locale/ru";
 import { RouterProvider } from "react-router-dom";
 import { MantineProvider } from "@mantine/core";

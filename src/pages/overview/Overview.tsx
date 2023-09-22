@@ -4,7 +4,7 @@ import { Button, Group, Stack } from "@mantine/core";
 import { MonthPickerInput } from "@mantine/dates";
 import { Layout } from "@/shared/ui";
 import { reviseObjectsMock } from "@/entities/revise-object";
-import { OverviewTable } from "@/features/overview-table";
+import { OverviewTable } from "@/widgets/overview-table";
 
 import styles from "./overview.module.css";
 

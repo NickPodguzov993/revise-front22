@@ -8,6 +8,7 @@ import {
 import { FaTrashAlt } from "react-icons/fa";
 import {
   FileStatus,
+  ReviseFile,
   ReviseObject,
   getFileStatusTitle,
 } from "@/entities/revise-object";
@@ -17,11 +18,16 @@ import styles from "./object-row.module.css";
 type ObjectRowProps = {
   obj: ReviseObject;
   fileIdx?: number;
+  onUpload?: (id: ReviseFile["id"]) => void;
 };
 
-export function ObjectRow({ obj, fileIdx = 0 }: ObjectRowProps) {
+export function ObjectRow({
+  obj,
+  fileIdx = 0,
+  onUpload = () => {},
+}: ObjectRowProps) {
   const filesCount = obj.files.length;
-  const status = obj.files[fileIdx].status;
+  const file = obj.files[fileIdx];
 
   return (
     <Table.Tr
@@ -31,14 +37,16 @@ export function ObjectRow({ obj, fileIdx = 0 }: ObjectRowProps) {
     >
       <Table.Td>{fileIdx === 0 && obj.name}</Table.Td>
       <Table.Td>
-        <Badge className={styles.badge} color={getBadgeColor(status)}>
-          {getFileStatusTitle(status)}
+        <Badge className={styles.badge} color={getBadgeColor(file.status)}>
+          {getFileStatusTitle(file.status)}
         </Badge>
       </Table.Td>
       <Table.Td>
         <Group gap="sm">
-          <Button size="xs">Загрузить</Button>
-          {status !== "empty" && (
+          <Button size="xs" onClick={() => onUpload(file.id)}>
+            Загрузить
+          </Button>
+          {file.status !== "empty" && (
             <Button px="sm" color="red" size="xs" title="Удалить">
               <FaTrashAlt />
             </Button>
