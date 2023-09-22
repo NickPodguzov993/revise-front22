@@ -3,10 +3,13 @@
 }
 
 .datePicker {
-  min-width: 240px;
-  text-transform: capitalize;
+  min-width: rem(240px);
 
   label {
-    margin-bottom: 0.25em;
+    margin-bottom: rem(4px);
+  }
+
+  button {
+    text-transform: capitalize;
   }
 }

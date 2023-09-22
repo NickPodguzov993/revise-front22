@@ -1,13 +1,15 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Button, Group, Stack } from "@mantine/core";
 import { MonthPickerInput } from "@mantine/dates";
 import { Layout } from "@/shared/ui";
+import { reviseObjectsMock } from "@/entities/revise-object";
 import { OverviewTable } from "@/features/overview-table";
 
 import styles from "./overview.module.css";
 
 export function OverviewPage() {
-  const [month, setMonth] = useState(new Date());
+  const [date, setDate] = useState(new Date());
 
   return (
     <Layout>
@@ -16,17 +18,23 @@ export function OverviewPage() {
           <MonthPickerInput
             className={styles.datePicker}
             size="md"
-            label="Выберите месяц"
-            value={month}
-            onChange={(date) => setMonth(date as Date)}
+            label="Месяц сверки"
+            value={date}
+            onChange={(date) => setDate(date as Date)}
           />
           <Button variant="light" size="md">
             Платежные системы
           </Button>
         </Group>
-        <OverviewTable />
+        <OverviewTable data={reviseObjectsMock} />
         <Group justify="end">
-          <Button size="md">Рассчитать</Button>
+          <Button
+            size="md"
+            component={Link}
+            to={`/summary/${date.getFullYear()}-${date.getMonth()}`}
+          >
+            Рассчитать
+          </Button>
         </Group>
       </Stack>
     </Layout>

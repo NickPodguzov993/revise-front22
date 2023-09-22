@@ -5,7 +5,12 @@ import {
   Group,
   Table,
 } from "@mantine/core";
-import { FileStatus, ReviseObject } from "@/entities/revise-object";
+import { FaTrashAlt } from "react-icons/fa";
+import {
+  FileStatus,
+  ReviseObject,
+  getFileStatusTitle,
+} from "@/entities/revise-object";
 
 import styles from "./object-row.module.css";
 
@@ -16,6 +21,8 @@ type ObjectRowProps = {
 
 export function ObjectRow({ obj, fileIdx = 0 }: ObjectRowProps) {
   const filesCount = obj.files.length;
+  const status = obj.files[fileIdx].status;
+
   return (
     <Table.Tr
       className={
@@ -24,16 +31,18 @@ export function ObjectRow({ obj, fileIdx = 0 }: ObjectRowProps) {
     >
       <Table.Td>{fileIdx === 0 && obj.name}</Table.Td>
       <Table.Td>
-        <Badge color={getBadgeColor(obj.files[fileIdx].status)}>
-          {obj.files[fileIdx].status}
+        <Badge className={styles.badge} color={getBadgeColor(status)}>
+          {getFileStatusTitle(status)}
         </Badge>
       </Table.Td>
       <Table.Td>
         <Group gap="sm">
           <Button size="xs">Загрузить</Button>
-          <Button color="red" size="xs">
-            X
-          </Button>
+          {status !== "empty" && (
+            <Button px="sm" color="red" size="xs" title="Удалить">
+              <FaTrashAlt />
+            </Button>
+          )}
         </Group>
       </Table.Td>
     </Table.Tr>

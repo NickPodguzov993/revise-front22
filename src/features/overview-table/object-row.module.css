@@ -5,3 +5,8 @@
     padding-bottom: rem(2px);
   }
 }
+
+.badge {
+  min-width: rem(100px);
+  line-height: 1;
+}
