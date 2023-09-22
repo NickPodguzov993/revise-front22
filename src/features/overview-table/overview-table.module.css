@@ -1,0 +1,24 @@
+.scrollArea {
+  .mantine-ScrollArea-scrollbar {
+    z-index: 1;
+  }
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  background-color: var(--mantine-color-body);
+  box-shadow: var(--mantine-shadow-sm);
+  transition: box-shadow 150ms ease;
+  z-index: 1;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-bottom: rem(1px) solid
+      light-dark(var(--table-border-color), var(--mantine-color-dark-4));
+  }
+}

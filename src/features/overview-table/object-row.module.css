@@ -1,0 +1,7 @@
+.multipleRow {
+  border-bottom: none;
+
+  td {
+    padding-bottom: rem(2px);
+  }
+}

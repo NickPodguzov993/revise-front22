@@ -1,0 +1,12 @@
+.container {
+  height: 100%;
+}
+
+.datePicker {
+  min-width: 240px;
+  text-transform: capitalize;
+
+  label {
+    margin-bottom: 0.25em;
+  }
+}
