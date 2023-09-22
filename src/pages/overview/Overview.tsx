@@ -22,7 +22,7 @@ export function OverviewPage() {
             value={date}
             onChange={(date) => setDate(date as Date)}
           />
-          <Button variant="light" size="md">
+          <Button variant="light" size="md" component={Link} to="/systems">
             Платежные системы
           </Button>
         </Group>

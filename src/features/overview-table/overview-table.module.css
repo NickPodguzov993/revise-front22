@@ -8,8 +8,6 @@
   position: sticky;
   top: 0;
   background-color: var(--mantine-color-body);
-  box-shadow: var(--mantine-shadow-sm);
-  transition: box-shadow 150ms ease;
   z-index: 1;
 
   &::after {
