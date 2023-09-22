@@ -1,5 +1,4 @@
 import { useParams } from "react-router-dom";
-import { Layout } from "@/shared/ui";
 
 export function SummaryPage() {
   const params = useParams();
@@ -10,10 +9,8 @@ export function SummaryPage() {
   });
 
   return (
-    <Layout>
-      <span>
-        Summary for {textDate[0].toLocaleUpperCase() + textDate.slice(1)}
-      </span>
-    </Layout>
+    <span>
+      Summary for {textDate[0].toLocaleUpperCase() + textDate.slice(1)}
+    </span>
   );
 }

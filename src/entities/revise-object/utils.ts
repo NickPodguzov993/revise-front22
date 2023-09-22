@@ -3,9 +3,9 @@ import { FileStatus } from "./model";
 export function getFileStatusTitle(status: FileStatus) {
   switch (status) {
     case "empty":
-      return "Не загружен";
+      return "Не загружено";
     case "uploaded":
-      return "Загружен";
+      return "Загружено";
     case "error":
       return "Ошибка";
     default:

@@ -1,1 +1,1 @@
-export * from "./Summary";
+export { SummaryPage as default } from "./Summary";

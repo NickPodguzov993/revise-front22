@@ -1,1 +1,1 @@
-export * from "./ReviseUpload";
+export { ReviseUpload as default } from "./ReviseUpload";

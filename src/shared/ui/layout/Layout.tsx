@@ -1,11 +1,10 @@
-import { PropsWithChildren } from "react";
-import { Link } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import { AppShell, Group, Title } from "@mantine/core";
 
 import styles from "./layout.module.css";
 import { ColorSchemeToggle } from "./ColorSchemeToggle";
 
-export function Layout({ children }: PropsWithChildren) {
+export function Layout() {
   // const [opened, { toggle }] = useDisclosure();
 
   return (
@@ -28,7 +27,9 @@ export function Layout({ children }: PropsWithChildren) {
 
       {/* <AppShell.Navbar p="md">Navbar</AppShell.Navbar> */}
 
-      <AppShell.Main>{children}</AppShell.Main>
+      <AppShell.Main>
+        <Outlet />
+      </AppShell.Main>
     </AppShell>
   );
 }
