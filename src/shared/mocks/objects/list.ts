@@ -1,5 +1,5 @@
 import { rest } from "msw";
-import { getShortDate } from "./utils";
+import { getMonthDate } from "@/shared/utils";
 
 export const objectsListHandler = rest.get(
   "/api/revise-objects",
@@ -22,7 +22,7 @@ export const objectsListHandler = rest.get(
 
 function getInitialData() {
   const initial = JSON.stringify({
-    [getShortDate(new Date())]: [
+    [getMonthDate(new Date())]: [
       { name: "Табло", files: [{ id: 1, status: "uploaded" }] },
       {
         name: "Платежная система #1",

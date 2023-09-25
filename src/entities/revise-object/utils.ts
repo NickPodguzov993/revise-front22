@@ -1,9 +1,5 @@
 import { FileStatus } from "./model";
 
-export function getShortDate(date: Date) {
-  return `${date.getFullYear()}-${date.getMonth() + 1}`;
-}
-
 export function getFileStatusTitle(status: FileStatus) {
   switch (status) {
     case "empty":

@@ -1,7 +1,7 @@
-import { getShortDate } from "./utils";
+import { getMonthDate } from "@/shared/utils";
 
 export function reviseObjectsUrl(date: Date) {
-  return `/api/revise-objects?date=${getShortDate(date)}`;
+  return `/api/revise-objects?date=${getMonthDate(date)}`;
 }
 
 export function uploadReviseFile() {}

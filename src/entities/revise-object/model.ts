@@ -6,6 +6,7 @@ export type ReviseFile = {
 };
 
 export type ReviseObject = {
+  id: number;
   name: string;
   files: ReviseFile[];
 };
