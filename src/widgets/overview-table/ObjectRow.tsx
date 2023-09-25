@@ -47,7 +47,7 @@ export function ObjectRow({
             Загрузить
           </Button>
           {file.status !== "empty" && (
-            <Button px="sm" color="red" size="xs" title="Удалить">
+            <Button px="xs" color="red" size="xs" title="Удалить">
               <FaTrashAlt />
             </Button>
           )}

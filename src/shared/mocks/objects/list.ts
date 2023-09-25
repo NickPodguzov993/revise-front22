@@ -16,7 +16,7 @@ export const objectsListHandler = rest.get(
       localStorage.getItem("revise-objects") || getInitialData()
     );
 
-    return res(ctx.status(200), ctx.json(saved[date]));
+    return res(ctx.status(200), ctx.json(saved[date] || []));
   }
 );
 

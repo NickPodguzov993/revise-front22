@@ -32,7 +32,7 @@ export function OverviewPage() {
           value={date}
           onChange={onDateChange}
         />
-        <Button variant="light" size="md" component={Link} to="/systems">
+        <Button variant="light" size="sm" component={Link} to="/systems">
           Платежные системы
         </Button>
       </Group>
