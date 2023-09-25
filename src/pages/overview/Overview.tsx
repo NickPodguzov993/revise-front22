@@ -4,7 +4,11 @@ import { Link, useSearchParams } from "react-router-dom";
 import { Button, Group, Stack } from "@mantine/core";
 import { MonthPickerInput } from "@mantine/dates";
 
-import { ReviseObject, getShortDate } from "@/entities/revise-object";
+import {
+  ReviseObject,
+  getShortDate,
+  reviseObjectsUrl,
+} from "@/entities/revise-object";
 import { OverviewTable } from "@/widgets/overview-table";
 
 import styles from "./overview.module.css";
@@ -14,9 +18,7 @@ export function OverviewPage() {
     date: getShortDate(new Date()),
   });
   const [date, setDate] = useState(new Date(params.get("date")!));
-  const { data, isLoading } = useSWR<ReviseObject[]>(
-    `/api/revise-objects?date=${getShortDate(date)}`
-  );
+  const { data, isLoading } = useSWR<ReviseObject[]>(reviseObjectsUrl(date));
 
   return (
     <Stack className={styles.container} gap="lg">
