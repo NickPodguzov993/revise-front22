@@ -40,13 +40,15 @@ export function OverviewTable({ data, loading }: OverviewTableProps) {
     <>
       <Card className={styles.container} withBorder>
         <LoadingOverlay visible={loading} />
-        <ScrollArea className={styles.scrollArea}>
+        <ScrollArea classNames={{ scrollbar: styles.scrollbar }}>
           <Table verticalSpacing="xs">
             <Table.Thead className={styles.header}>
               <Table.Tr>
                 <Table.Th>Объект</Table.Th>
                 <Table.Th w={{ sm: 240, md: 320, lg: 360 }}>Статус</Table.Th>
-                <Table.Th w={{ base: 220, lg: 280 }}>Действия</Table.Th>
+                <Table.Th miw={160} w={{ sm: 220, lg: 280 }}>
+                  Действия
+                </Table.Th>
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>{rows}</Table.Tbody>

@@ -3,10 +3,8 @@
   padding: 0;
 }
 
-.scrollArea {
-  .mantine-ScrollArea-scrollbar {
-    z-index: 1;
-  }
+.scrollbar {
+  z-index: 1;
 }
 
 .header {

@@ -13,14 +13,17 @@ export const objectsListHandler = rest.get(
     }
 
     const saved = JSON.parse(
-      localStorage.getItem("revise-objects") || getInitialData()
+      localStorage.getItem("revise-objects") || generateInitialData()
     );
 
-    return res(ctx.status(200), ctx.json(saved[date] || []));
+    return res(
+      ctx.status(200),
+      ctx.json(saved[date] || generateEmptyResponse())
+    );
   }
 );
 
-function getInitialData() {
+function generateInitialData() {
   const initial = JSON.stringify({
     [getMonthDate(new Date())]: [
       { name: "Табло", files: [{ id: 1, status: "uploaded" }] },
@@ -37,8 +40,19 @@ function getInitialData() {
       },
       { name: "Платежная система #3", files: [{ id: 5, status: "empty" }] },
       { name: "Платежная система #4", files: [{ id: 6, status: "empty" }] },
+      // { name: "Платежная система #5", files: [{ id: 6, status: "empty" }] },
+      // { name: "Платежная система #6", files: [{ id: 6, status: "empty" }] },
+      // { name: "Платежная система #7", files: [{ id: 6, status: "empty" }] },
+      // { name: "Платежная система #8", files: [{ id: 6, status: "empty" }] },
+      // { name: "Платежная система #9", files: [{ id: 6, status: "empty" }] },
+      // { name: "Платежная система #10", files: [{ id: 6, status: "empty" }] },
+      // { name: "Платежная система #11", files: [{ id: 6, status: "empty" }] },
     ],
   });
   localStorage.setItem("revise-objects", initial);
   return initial;
+}
+
+function generateEmptyResponse() {
+  return [{ name: "Табло", files: [{ id: Date.now(), status: "empty" }] }];
 }

@@ -18,8 +18,7 @@ export function ColorSchemeToggle() {
         setColorScheme(computedColorScheme === "light" ? "dark" : "light")
       }
       variant="default"
-      size={38}
-      aria-label="Toggle color scheme"
+      size="2.25rem"
     >
       <TbSun className={cx(styles.icon, styles.light)} />
       <TbMoon className={cx(styles.icon, styles.dark)} />

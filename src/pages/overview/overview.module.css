@@ -3,7 +3,11 @@
 }
 
 .datePicker {
-  min-width: rem(240px);
+  min-width: rem(210px);
+
+  @media (min-width: $mantine-breakpoint-xs) {
+    min-width: rem(230px);
+  }
 
   label {
     margin-bottom: rem(4px);

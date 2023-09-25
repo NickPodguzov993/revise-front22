@@ -8,5 +8,7 @@
 
 .badge {
   min-width: rem(112px);
+  height: auto;
+  padding: rem(4px);
   line-height: 1;
 }

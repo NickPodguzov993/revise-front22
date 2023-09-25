@@ -24,7 +24,7 @@ export function OverviewPage() {
 
   return (
     <Stack className={styles.container} gap="lg">
-      <Group justify="space-between">
+      <Group justify="space-between" align="end">
         <MonthPickerInput
           className={styles.datePicker}
           size="md"
@@ -32,7 +32,7 @@ export function OverviewPage() {
           value={date}
           onChange={onDateChange}
         />
-        <Button variant="light" size="sm" component={Link} to="/systems">
+        <Button variant="light" size="md" component={Link} to="/systems">
           Платежные системы
         </Button>
       </Group>

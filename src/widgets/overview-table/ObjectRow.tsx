@@ -35,7 +35,11 @@ export function ObjectRow({
         filesCount > 1 && fileIdx !== filesCount - 1 ? styles.multipleRow : ""
       }
     >
-      <Table.Td>{fileIdx === 0 && obj.name}</Table.Td>
+      {fileIdx === 0 && (
+        <Table.Td rowSpan={filesCount > 1 ? filesCount : undefined}>
+          {obj.name}
+        </Table.Td>
+      )}
       <Table.Td>
         <Badge className={styles.badge} color={getBadgeColor(file.status)}>
           {getFileStatusTitle(file.status)}
