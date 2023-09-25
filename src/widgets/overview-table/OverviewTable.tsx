@@ -1,12 +1,11 @@
-import { lazy, useState } from "react";
+import { useState } from "react";
 import { Card, LoadingOverlay, ScrollArea, Table } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { ReviseFile, ReviseObject } from "@/entities/revise-object";
+import { ReviseUpload } from "@/features/revise-upload";
 
 import styles from "./overview-table.module.css";
 import { ObjectRow } from "./ObjectRow";
-
-const ReviseUpload = lazy(() => import("@/features/revise-upload"));
 
 type OverviewTableProps = {
   data: ReviseObject[];
