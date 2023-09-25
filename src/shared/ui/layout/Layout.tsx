@@ -19,7 +19,7 @@ export function Layout() {
         {/* <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" /> */}
         <Group className={styles.headerGroup}>
           <Title className={styles.title} order={1} size={24}>
-            <Link to="/">Payments Revise</Link>
+            <Link to="/">СверОчка</Link>
           </Title>
           <ColorSchemeToggle />
         </Group>

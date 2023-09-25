@@ -1,14 +1,22 @@
+import useSWR from "swr";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { Button, Group, Stack } from "@mantine/core";
 import { MonthPickerInput } from "@mantine/dates";
-import { reviseObjectsMock } from "@/entities/revise-object";
+
+import { ReviseObject, getShortDate } from "@/entities/revise-object";
 import { OverviewTable } from "@/widgets/overview-table";
 
 import styles from "./overview.module.css";
 
 export function OverviewPage() {
-  const [date, setDate] = useState(new Date());
+  const [params, setParams] = useSearchParams({
+    date: getShortDate(new Date()),
+  });
+  const [date, setDate] = useState(new Date(params.get("date")!));
+  const { data, isLoading } = useSWR<ReviseObject[]>(
+    `/api/revise-objects?date=${getShortDate(date)}`
+  );
 
   return (
     <Stack className={styles.container} gap="lg">
@@ -18,18 +26,21 @@ export function OverviewPage() {
           size="md"
           label="Месяц сверки"
           value={date}
-          onChange={(date) => setDate(date as Date)}
+          onChange={(date: Date) => {
+            setDate(date);
+            setParams({ date: getShortDate(date) });
+          }}
         />
         <Button variant="light" size="md" component={Link} to="/systems">
           Платежные системы
         </Button>
       </Group>
-      <OverviewTable data={reviseObjectsMock} />
+      <OverviewTable data={data || []} loading={isLoading} />
       <Group justify="end">
         <Button
           size="md"
           component={Link}
-          to={`/summary/${date.getFullYear()}-${date.getMonth() + 1}`}
+          to={`/summary/${getShortDate(date)}`}
         >
           Рассчитать
         </Button>

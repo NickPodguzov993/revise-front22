@@ -1,5 +1,5 @@
 import { lazy, useState } from "react";
-import { Card, ScrollArea, Table } from "@mantine/core";
+import { Card, LoadingOverlay, ScrollArea, Table } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { ReviseFile, ReviseObject } from "@/entities/revise-object";
 
@@ -10,30 +10,37 @@ const ReviseUpload = lazy(() => import("@/features/revise-upload"));
 
 type OverviewTableProps = {
   data: ReviseObject[];
+  loading: boolean;
 };
 
-// TODO: optimize table rerendering
-export function OverviewTable({ data }: OverviewTableProps) {
+export function OverviewTable({ data, loading }: OverviewTableProps) {
   const [opened, { open, close }] = useDisclosure(false);
   const [fileId, setFileId] = useState<ReviseFile["id"] | null>(null);
 
-  const rows = data.flatMap((obj) =>
-    obj.files.map((_, idx) => (
-      <ObjectRow
-        key={`${obj.name}-${idx}`}
-        obj={obj}
-        fileIdx={idx}
-        onUpload={(id) => {
-          setFileId(id);
-          open();
-        }}
-      />
-    ))
+  const rows = data.length ? (
+    data.flatMap((obj) =>
+      obj.files.map((_, idx) => (
+        <ObjectRow
+          key={`${obj.name}-${idx}`}
+          obj={obj}
+          fileIdx={idx}
+          onUpload={(id) => {
+            setFileId(id);
+            open();
+          }}
+        />
+      ))
+    )
+  ) : (
+    <Table.Tr className={styles.noData}>
+      <Table.Td colSpan={3}>Нет данных</Table.Td>
+    </Table.Tr>
   );
 
   return (
     <>
-      <Card p={0} withBorder>
+      <Card className={styles.container} withBorder>
+        <LoadingOverlay visible={loading} />
         <ScrollArea className={styles.scrollArea}>
           <Table verticalSpacing="xs">
             <Table.Thead className={styles.header}>
