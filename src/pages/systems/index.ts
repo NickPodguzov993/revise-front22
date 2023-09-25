@@ -1,1 +1,1 @@
-export { SystemsPage as default } from "./Systems";
+export { SystemPage as default } from "./Systems";

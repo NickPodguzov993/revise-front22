@@ -1,0 +1,13 @@
+.systemCard {
+  border: 1px solid transparent;
+  cursor: pointer;
+
+  &.active {
+    background-color: var(--mantine-color-blue-light);
+    border-color: var(--mantine-color-blue-outline);
+  }
+
+  @mixin hover {
+    background-color: var(--mantine-color-blue-light-hover);
+  }
+}
