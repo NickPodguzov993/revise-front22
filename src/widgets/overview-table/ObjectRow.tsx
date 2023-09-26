@@ -5,7 +5,7 @@ import {
   Group,
   Table,
 } from "@mantine/core";
-import { FaTrashAlt } from "react-icons/fa";
+import { TbTrash } from "react-icons/tb";
 import {
   FileStatus,
   ReviseFile,
@@ -52,7 +52,7 @@ export function ObjectRow({
           </Button>
           {file.status !== "empty" && (
             <Button px="xs" color="red" size="xs" title="Удалить">
-              <FaTrashAlt />
+              <TbTrash />
             </Button>
           )}
         </Group>

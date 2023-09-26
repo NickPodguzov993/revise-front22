@@ -1,26 +1,18 @@
 import useSWR from "swr";
-import { useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button, Group, Stack } from "@mantine/core";
 import { MonthPickerInput } from "@mantine/dates";
 
 import { getMonthDate } from "@/shared/utils";
+import { usePersistedDate } from "@/shared/hooks";
 import { ReviseObject, reviseObjectsUrl } from "@/entities/revise-object";
 import { OverviewTable } from "@/widgets/overview-table";
 
 import styles from "./overview.module.css";
 
 export function OverviewPage() {
-  const [params, setParams] = useSearchParams({
-    date: getMonthDate(new Date()),
-  });
-  const [date, setDate] = useState(new Date(params.get("date")!));
+  const [date, setDate] = usePersistedDate();
   const { data, isLoading } = useSWR<ReviseObject[]>(reviseObjectsUrl(date));
-
-  function onDateChange(date: Date) {
-    setDate(date);
-    setParams({ date: getMonthDate(date) });
-  }
 
   return (
     <Stack className={styles.container} gap="lg">
@@ -30,9 +22,14 @@ export function OverviewPage() {
           size="md"
           label="Месяц сверки"
           value={date}
-          onChange={onDateChange}
+          onChange={setDate}
         />
-        <Button variant="light" size="md" component={Link} to="/systems">
+        <Button
+          variant="light"
+          size="md"
+          component={Link}
+          to={`/systems?date=${getMonthDate(date)}`}
+        >
           Платежные системы
         </Button>
       </Group>

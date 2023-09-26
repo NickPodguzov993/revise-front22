@@ -1,33 +1,117 @@
+import useSWR from "swr";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Button, Group, Stack } from "@mantine/core";
+import { Button, Group, Stack, Title } from "@mantine/core";
 import { TbArrowLeft } from "react-icons/tb";
+
+import { getMonthDate } from "@/shared/utils";
+import { usePersistedDate } from "@/shared/hooks";
+import {
+  PaymentsSystem,
+  SystemFormValues,
+  createPaymentsSystem,
+  deletePaymentsSystem,
+  paymentsSystemUrl,
+  updatePaymentsSystem,
+} from "@/entities/payments-system";
 import { SystemsList } from "@/widgets/system-list";
-import { SystemEdit } from "@/widgets/system-edit";
+import { SystemForm } from "@/widgets/system-form";
+import { MonthPickerInput } from "@mantine/dates";
 
 export function SystemPage() {
+  const [date, setDate] = usePersistedDate();
+  const [formTarget, setFormTarget] = useState<
+    PaymentsSystem["id"] | "new" | null
+  >(null);
+  const {
+    data: systems,
+    isLoading,
+    mutate,
+  } = useSWR<PaymentsSystem[]>(paymentsSystemUrl(date));
+
+  function onSystemSelect(id: PaymentsSystem["id"]) {
+    setFormTarget(id);
+  }
+  function onCreateSystem() {
+    setFormTarget("new");
+  }
+  function onFormCancel() {
+    setFormTarget(null);
+  }
+  async function onDeleteSystem(id: number) {
+    await deletePaymentsSystem(id);
+
+    if (formTarget === id) {
+      setFormTarget(null);
+    }
+    mutate();
+  }
+  async function onFormSubmit(values: SystemFormValues) {
+    if (!formTarget) return;
+    if (formTarget === "new") {
+      const res = await createPaymentsSystem({
+        ...values,
+        date: getMonthDate(date),
+      });
+      if (!res.ok) {
+        // TODO: handle
+        return;
+      }
+    } else {
+      const res = await updatePaymentsSystem(formTarget, values);
+      if (!res.ok) {
+        // TODO: handle
+        return;
+      }
+    }
+
+    mutate();
+    setFormTarget(null);
+  }
+
   return (
     <Group h="100%" grow>
-      <Stack h="100%" justify="space-between">
-        <SystemsList />
-        <Group pr="1rem">
+      <Stack h="100%" pt="xs">
+        <Group justify="space-between" pr="md">
+          <Title order={2} fz="xl">
+            Платежные системы
+          </Title>
+          <MonthPickerInput size="xs" value={date} onChange={setDate} />
+        </Group>
+        <SystemsList
+          systems={systems || []}
+          isLoading={isLoading}
+          selected={formTarget !== "new" ? formTarget : null}
+          onSelect={onSystemSelect}
+          onDelete={onDeleteSystem}
+        />
+        <Group pr="md" mt="auto">
           <Button
-            size="md"
+            size="sm"
             component={Link}
-            to={"/"}
+            to={`/?date=${getMonthDate(date)}`}
             styles={{ root: { flex: 1 }, label: { gap: "0.5rem" } }}
           >
             <TbArrowLeft />
             Назад
           </Button>
-          <Button size="md" style={{ flex: 2 }}>
-            Дублировать прошлый месяц
+          <Button size="sm" style={{ flex: 2 }} disabled>
+            Скопировать из прошлого месяца
           </Button>
-          <Button size="md" style={{ flex: 1 }}>
+          <Button size="sm" style={{ flex: 1 }} onClick={onCreateSystem}>
             Создать
           </Button>
         </Group>
       </Stack>
-      <SystemEdit />
+      <SystemForm
+        target={
+          formTarget === "new"
+            ? "new"
+            : systems?.find((s) => s.id === formTarget)
+        }
+        onCancel={onFormCancel}
+        onSubmit={onFormSubmit}
+      />
     </Group>
   );
 }

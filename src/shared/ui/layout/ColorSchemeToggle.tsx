@@ -1,4 +1,4 @@
-import cx from "clsx";
+import clsx from "clsx";
 import {
   ActionIcon,
   useMantineColorScheme,
@@ -20,8 +20,8 @@ export function ColorSchemeToggle() {
       variant="default"
       size="2.25rem"
     >
-      <TbSun className={cx(styles.icon, styles.light)} />
-      <TbMoon className={cx(styles.icon, styles.dark)} />
+      <TbSun className={clsx(styles.icon, styles.light)} />
+      <TbMoon className={clsx(styles.icon, styles.dark)} />
     </ActionIcon>
   );
 }

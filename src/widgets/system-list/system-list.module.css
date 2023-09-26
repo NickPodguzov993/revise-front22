@@ -7,7 +7,15 @@
     border-color: var(--mantine-color-blue-outline);
   }
 
+  button {
+    display: none;
+  }
+
   @mixin hover {
     background-color: var(--mantine-color-blue-light-hover);
+
+    button {
+      display: block;
+    }
   }
 }

@@ -1,38 +1,80 @@
-import cx from "clsx";
-import { Card, ScrollArea, Stack, Text, Title } from "@mantine/core";
+import clsx from "clsx";
+import {
+  Button,
+  Card,
+  Center,
+  Group,
+  Loader,
+  ScrollArea,
+  Stack,
+  Text,
+  Title,
+} from "@mantine/core";
+import { PaymentsSystem } from "@/entities/payments-system";
+
 import styles from "./system-list.module.css";
+import { TbTrash } from "react-icons/tb";
 
-const data = [
-  { id: 0, name: "Платежная система #1", filesCount: 1 },
-  { id: 1, name: "Платежная система #2", filesCount: 2 },
-  { id: 2, name: "Платежная система #3", filesCount: 1 },
-  { id: 3, name: "Платежная система #4", filesCount: 1 },
-  // { id: 4, name: "Платежная система #5", filesCount: 1 },
-  // { id: 5, name: "Платежная система #6", filesCount: 1 },
-  // { id: 6, name: "Платежная система #7", filesCount: 1 },
-];
+type SystemsListProps = {
+  systems: PaymentsSystem[];
+  isLoading?: boolean;
+  selected?: PaymentsSystem["id"] | null;
+  onSelect?: (id: PaymentsSystem["id"]) => void;
+  onDelete?: (id: PaymentsSystem["id"]) => void;
+};
 
-export function SystemsList() {
-  const active = 0;
+export function SystemsList({
+  systems,
+  selected,
+  isLoading,
+  onSelect = () => {},
+  onDelete = () => {},
+}: SystemsListProps) {
   return (
     <ScrollArea>
       <Stack pr="1rem">
-        {data.map((item, idx) => (
-          <Card
-            key={item.id}
-            className={cx(styles.systemCard, {
-              [styles.active]: idx === active,
-            })}
-            onClick={() => {}}
-          >
-            <Title order={3} fz="xl">
-              {item.name}
-            </Title>
-            <Text c="dimmed" size="sm">
-              Количество файлов: {item.filesCount}
-            </Text>
+        {isLoading && (
+          <Center mt="1rem">
+            <Loader />
+          </Center>
+        )}
+        {!isLoading && !systems.length && (
+          <Card mt="0.5rem" py="lg" ta="center">
+            <Text>Не найдено платежных систем</Text>
           </Card>
-        ))}
+        )}
+        {!isLoading &&
+          systems.map((s) => (
+            <Card
+              key={s.id}
+              className={clsx(styles.systemCard, {
+                [styles.active]: s.id === selected,
+              })}
+              onClick={() => onSelect(s.id)}
+            >
+              <Group justify="space-between" wrap="nowrap" gap="sm">
+                <div>
+                  <Text lineClamp={1} component={Title} order={3} fz="xl">
+                    {s.name}
+                  </Text>
+                  <Text c="dimmed" size="sm">
+                    Количество файлов: {s.files.length}
+                  </Text>
+                </div>
+                <Button
+                  variant="light"
+                  color="red"
+                  px="xs"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete(s.id);
+                  }}
+                >
+                  <TbTrash size={20} />
+                </Button>
+              </Group>
+            </Card>
+          ))}
       </Stack>
     </ScrollArea>
   );

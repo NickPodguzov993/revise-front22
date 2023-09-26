@@ -18,7 +18,7 @@ export function Layout() {
         <Container className={styles.header} size="xl">
           {/* <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" /> */}
           <Title className={styles.title} order={1} size={24}>
-            <Link to="/">СверОчка</Link>
+            <Link to="/">Сверка платежных систем</Link>
           </Title>
           <ColorSchemeToggle />
         </Container>
