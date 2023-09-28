@@ -1,5 +1,5 @@
 import { rest } from "msw";
-import { duplicatePaymentsSystemsMock } from "./db";
+import { duplicatePaymentsSystemsMock } from "./api";
 
 export const systemsDuplicateHandler = rest.post(
   "/api/payments-system/duplicate",

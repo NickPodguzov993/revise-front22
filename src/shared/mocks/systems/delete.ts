@@ -1,5 +1,5 @@
 import { rest } from "msw";
-import { deletePaymentsSystemMock } from "./db";
+import { deletePaymentsSystemMock } from "./api";
 
 export const systemDeleteHandler = rest.delete(
   "/api/payments-system/:id",

@@ -1,8 +1,8 @@
 import { getMonthDate } from "@/shared/utils";
 
-function getAllSystems(): Record<
+function getAllSystemsMock(): Record<
   string,
-  { id: number; name: string; date: string; files: object[] }[]
+  { id: number; name: string; date: string; files: { id: number }[] }[]
 > {
   let saved = localStorage.getItem("payments-systems");
   if (!saved) {
@@ -12,8 +12,14 @@ function getAllSystems(): Record<
   return JSON.parse(saved);
 }
 
+export function getPaymentsSystemsByDateMock(date: string) {
+  const allSystems = getAllSystemsMock();
+  const systems = allSystems[date];
+  return systems || [];
+}
+
 export function getPaymentsSystemsMock(date: string) {
-  const systems = getAllSystems();
+  const systems = getAllSystemsMock();
   return systems[date] || [];
 }
 
@@ -31,7 +37,7 @@ type CreateSystemMockDTO = {
 };
 
 export function createPaymentsSystemMock(payload: CreateSystemMockDTO) {
-  const systems = getAllSystems();
+  const systems = getAllSystemsMock();
   const system = { ...payload, id: Date.now() };
   const updated = {
     ...systems,
@@ -57,7 +63,7 @@ export function updatePaymentsSystemMock(
   id: number,
   payload: UpdateSystemMockDTO
 ) {
-  const systems = getAllSystems();
+  const systems = getAllSystemsMock();
   const system = Object.values(systems)
     .flatMap((x) => x)
     .find((x) => x.id === id);
@@ -77,7 +83,7 @@ export function updatePaymentsSystemMock(
 }
 
 export function deletePaymentsSystemMock(id: number) {
-  const systems = getAllSystems();
+  const systems = getAllSystemsMock();
   const system = Object.values(systems)
     .flatMap((x) => x)
     .find((x) => x.id === id);
@@ -96,7 +102,7 @@ type DuplicateSystemsMockDTO = {
 };
 
 export function duplicatePaymentsSystemsMock(payload: DuplicateSystemsMockDTO) {
-  const systems = getAllSystems();
+  const systems = getAllSystemsMock();
   const date = new Date(payload.date);
   date.setMonth(date.getMonth() - 1);
   const prevDate = getMonthDate(date);

@@ -1,5 +1,5 @@
 import { rest } from "msw";
-import { createPaymentsSystemMock } from "./db";
+import { createPaymentsSystemMock } from "./api";
 
 export const systemCreateHandler = rest.post(
   "/api/payments-system",

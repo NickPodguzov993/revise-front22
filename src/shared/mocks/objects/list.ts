@@ -1,5 +1,5 @@
 import { rest } from "msw";
-import { getMonthDate } from "@/shared/utils";
+import { getReviseObjectsMock } from "./api";
 
 export const objectsListHandler = rest.get(
   "/api/revise-objects",
@@ -12,47 +12,7 @@ export const objectsListHandler = rest.get(
       );
     }
 
-    const saved = JSON.parse(
-      localStorage.getItem("revise-objects") || generateInitialData()
-    );
-
-    return res(
-      ctx.status(200),
-      ctx.json(saved[date] || generateEmptyResponse())
-    );
+    const objects = getReviseObjectsMock(date);
+    return res(ctx.status(200), ctx.json(objects));
   }
 );
-
-function generateInitialData() {
-  const initial = JSON.stringify({
-    [getMonthDate(new Date())]: [
-      { name: "Табло", files: [{ id: 1, status: "uploaded" }] },
-      {
-        name: "Платежная система #1",
-        files: [
-          { id: 2, status: "error" },
-          { id: 3, status: "empty" },
-        ],
-      },
-      {
-        name: "Платежная система #2",
-        files: [{ id: 4, status: "uploaded" }],
-      },
-      { name: "Платежная система #3", files: [{ id: 5, status: "empty" }] },
-      { name: "Платежная система #4", files: [{ id: 6, status: "empty" }] },
-      // { name: "Платежная система #5", files: [{ id: 6, status: "empty" }] },
-      // { name: "Платежная система #6", files: [{ id: 6, status: "empty" }] },
-      // { name: "Платежная система #7", files: [{ id: 6, status: "empty" }] },
-      // { name: "Платежная система #8", files: [{ id: 6, status: "empty" }] },
-      // { name: "Платежная система #9", files: [{ id: 6, status: "empty" }] },
-      // { name: "Платежная система #10", files: [{ id: 6, status: "empty" }] },
-      // { name: "Платежная система #11", files: [{ id: 6, status: "empty" }] },
-    ],
-  });
-  localStorage.setItem("revise-objects", initial);
-  return initial;
-}
-
-function generateEmptyResponse() {
-  return [{ name: "Табло", files: [{ id: Date.now(), status: "empty" }] }];
-}

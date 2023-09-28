@@ -1,5 +1,5 @@
 import { rest } from "msw";
-import { getPaymentsSystemsMock } from "./db";
+import { getPaymentsSystemsMock } from "./api";
 
 export const systemsListHandler = rest.get(
   "/api/payments-system",

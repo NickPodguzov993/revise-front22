@@ -1,5 +1,5 @@
 import { rest } from "msw";
-import { updatePaymentsSystemMock } from "./db";
+import { updatePaymentsSystemMock } from "./api";
 
 export const systemUpdateHandler = rest.patch(
   "/api/payments-system/:id",
