@@ -1,5 +1,5 @@
 import { getMonthDate } from "@/shared/utils";
-import { CreateSystemDTO, UpdateSystemDTO } from "./dto";
+import { CreateSystemDTO, DuplicateSystemsDTO, UpdateSystemDTO } from "./dto";
 
 export function paymentsSystemUrl(date: Date) {
   return `/api/payments-system?date=${getMonthDate(date)}`;
@@ -25,5 +25,12 @@ export async function updatePaymentsSystem(
 export async function deletePaymentsSystem(id: number) {
   return fetch(`/api/payments-system/${id}`, {
     method: "DELETE",
+  });
+}
+
+export async function duplicatePaymentsSystems(payload: DuplicateSystemsDTO) {
+  return fetch("/api/payments-system/duplicate", {
+    method: "POST",
+    body: JSON.stringify(payload),
   });
 }

@@ -11,6 +11,7 @@ import {
   SystemFormValues,
   createPaymentsSystem,
   deletePaymentsSystem,
+  duplicatePaymentsSystems,
   paymentsSystemUrl,
   updatePaymentsSystem,
 } from "@/entities/payments-system";
@@ -29,6 +30,10 @@ export function SystemPage() {
     mutate,
   } = useSWR<PaymentsSystem[]>(paymentsSystemUrl(date));
 
+  function onDateChange(date: Date) {
+    setDate(date);
+    setFormTarget(null);
+  }
   function onSystemSelect(id: PaymentsSystem["id"]) {
     setFormTarget(id);
   }
@@ -68,6 +73,18 @@ export function SystemPage() {
     mutate();
     setFormTarget(null);
   }
+  async function onDuplicate() {
+    // TODO: show confirm
+
+    const res = await duplicatePaymentsSystems({ date: getMonthDate(date) });
+    if (!res.ok) {
+      // TODO: handle
+      return;
+    }
+
+    mutate();
+    setFormTarget(null);
+  }
 
   return (
     <Group h="100%" grow>
@@ -76,7 +93,7 @@ export function SystemPage() {
           <Title order={2} fz="xl">
             Платежные системы
           </Title>
-          <MonthPickerInput size="xs" value={date} onChange={setDate} />
+          <MonthPickerInput size="xs" value={date} onChange={onDateChange} />
         </Group>
         <SystemsList
           systems={systems || []}
@@ -95,7 +112,7 @@ export function SystemPage() {
             <TbArrowLeft />
             Назад
           </Button>
-          <Button size="sm" style={{ flex: 2 }} disabled>
+          <Button size="sm" style={{ flex: 2 }} onClick={onDuplicate}>
             Скопировать из прошлого месяца
           </Button>
           <Button size="sm" style={{ flex: 1 }} onClick={onCreateSystem}>

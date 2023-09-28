@@ -52,7 +52,7 @@ export function ObjectRow({
           </Button>
           {file.status !== "empty" && (
             <Button px="xs" color="red" size="xs" title="Удалить">
-              <TbTrash />
+              <TbTrash size={16} />
             </Button>
           )}
         </Group>

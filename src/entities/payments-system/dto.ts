@@ -22,3 +22,7 @@ export type UpdateSystemDTO = {
     currency: string;
   }[];
 };
+
+export type DuplicateSystemsDTO = {
+  date: string;
+};

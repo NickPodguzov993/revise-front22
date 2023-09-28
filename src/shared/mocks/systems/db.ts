@@ -1,3 +1,5 @@
+import { getMonthDate } from "@/shared/utils";
+
 function getAllSystems(): Record<
   string,
   { id: number; name: string; date: string; files: object[] }[]
@@ -87,5 +89,25 @@ export function deletePaymentsSystemMock(id: number) {
     [system.date]: [...(systems[system.date] || []).filter((x) => x.id !== id)],
   };
   localStorage.setItem("payments-systems", JSON.stringify(updated));
-  return;
+}
+
+type DuplicateSystemsMockDTO = {
+  date: string;
+};
+
+export function duplicatePaymentsSystemsMock(payload: DuplicateSystemsMockDTO) {
+  const systems = getAllSystems();
+  const date = new Date(payload.date);
+  date.setMonth(date.getMonth() - 1);
+  const prevDate = getMonthDate(date);
+  const systemsToCopy = systems[prevDate];
+  if (!systemsToCopy?.length) {
+    throw new Error("No payments systems found");
+  }
+  const updated = {
+    ...systems,
+    [payload.date]: [...systemsToCopy],
+  };
+  localStorage.setItem("payments-systems", JSON.stringify(updated));
+  return systemsToCopy;
 }
