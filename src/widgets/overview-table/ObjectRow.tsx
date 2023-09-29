@@ -4,6 +4,7 @@ import {
   DefaultMantineColor,
   Group,
   Table,
+  Tooltip,
 } from "@mantine/core";
 import { TbTrash } from "react-icons/tb";
 import {
@@ -19,12 +20,14 @@ type ObjectRowProps = {
   obj: ReviseObject;
   fileIdx?: number;
   onUpload?: (id: ReviseFile["id"]) => void;
+  onDelete?: (id: ReviseFile["id"]) => void;
 };
 
 export function ObjectRow({
   obj,
   fileIdx = 0,
   onUpload = () => {},
+  onDelete = () => {},
 }: ObjectRowProps) {
   const filesCount = obj.files.length;
   const file = obj.files[fileIdx];
@@ -41,9 +44,15 @@ export function ObjectRow({
         </Table.Td>
       )}
       <Table.Td>
-        <Badge className={styles.badge} color={getBadgeColor(file.status)}>
-          {getFileStatusTitle(file.status)}
-        </Badge>
+        <Tooltip
+          label={file.message}
+          disabled={!file.message}
+          style={{ textAlign: "center", whiteSpace: "pre-wrap" }}
+        >
+          <Badge className={styles.badge} color={getBadgeColor(file.status)}>
+            {getFileStatusTitle(file.status)}
+          </Badge>
+        </Tooltip>
       </Table.Td>
       <Table.Td>
         <Group gap="sm">
@@ -51,7 +60,13 @@ export function ObjectRow({
             Загрузить
           </Button>
           {file.status !== "empty" && (
-            <Button px="xs" color="red" size="xs" title="Удалить">
+            <Button
+              px="xs"
+              color="red"
+              size="xs"
+              title="Удалить"
+              onClick={() => onDelete(file.id)}
+            >
               <TbTrash size={16} />
             </Button>
           )}

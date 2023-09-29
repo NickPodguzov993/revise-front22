@@ -26,4 +26,4 @@ Notes:
 
 - Is allowed to reupload files without deleting it?
 - How to handle `POST /api/revise/:date/` from multiple users simultaneously?
-  - Avoiding of unnecessary recalculations
+  - Avoiding of unnecessary recalculations (revise process)

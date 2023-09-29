@@ -1,4 +1,9 @@
 import { objectsListHandler } from "./list";
+import { objectFileUploadHandler } from "./upload";
 import { objectFileDeleteHandler } from "./delete";
 
-export default [objectsListHandler, objectFileDeleteHandler];
+export default [
+  objectsListHandler,
+  objectFileUploadHandler,
+  objectFileDeleteHandler,
+];

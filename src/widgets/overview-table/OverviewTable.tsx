@@ -1,7 +1,16 @@
 import { useState } from "react";
+import { useSWRConfig } from "swr";
 import { Card, LoadingOverlay, ScrollArea, Table } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { ReviseFile, ReviseObject } from "@/entities/revise-object";
+import { FileWithPath } from "@mantine/dropzone";
+import { usePersistedDate } from "@/shared/hooks";
+import {
+  ReviseFile,
+  ReviseObject,
+  deleteReviseFile,
+  reviseObjectsUrl,
+  uploadReviseFile,
+} from "@/entities/revise-object";
 import { ReviseUpload } from "@/features/revise-upload";
 
 import styles from "./overview-table.module.css";
@@ -13,8 +22,40 @@ type OverviewTableProps = {
 };
 
 export function OverviewTable({ data, loading }: OverviewTableProps) {
+  const { mutate } = useSWRConfig();
+  const [date] = usePersistedDate();
   const [opened, { open, close }] = useDisclosure(false);
   const [fileId, setFileId] = useState<ReviseFile["id"] | null>(null);
+
+  function onUploadOpen(id: ReviseFile["id"]) {
+    setFileId(id);
+    open();
+  }
+  function onUploadClose() {
+    setFileId(null);
+    close();
+  }
+  async function onUpload(file: FileWithPath) {
+    const buffer = await file.arrayBuffer();
+    const res = await uploadReviseFile(fileId!, buffer);
+    if (!res.ok) {
+      // TODO: handle
+    }
+
+    mutate(reviseObjectsUrl(date));
+    setFileId(null);
+    close();
+  }
+  async function onDelete(fileId: ReviseFile["id"]) {
+    const res = await deleteReviseFile(fileId);
+    if (!res.ok) {
+      // TODO: handle
+    }
+
+    mutate(reviseObjectsUrl(date));
+    setFileId(null);
+    close();
+  }
 
   const rows = data.length ? (
     data.flatMap((obj) =>
@@ -23,10 +64,8 @@ export function OverviewTable({ data, loading }: OverviewTableProps) {
           key={`${obj.name}-${idx}`}
           obj={obj}
           fileIdx={idx}
-          onUpload={(id) => {
-            setFileId(id);
-            open();
-          }}
+          onUpload={onUploadOpen}
+          onDelete={onDelete}
         />
       ))
     )
@@ -58,15 +97,8 @@ export function OverviewTable({ data, loading }: OverviewTableProps) {
       <ReviseUpload
         fileId={fileId!}
         opened={opened}
-        onSuccess={(files) => {
-          console.log(files);
-          setFileId(null);
-          close();
-        }}
-        onClose={() => {
-          setFileId(null);
-          close();
-        }}
+        onSuccess={onUpload}
+        onClose={onUploadClose}
       />
     </>
   );
