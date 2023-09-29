@@ -2,7 +2,7 @@ import { rest } from "msw";
 import { getReviseObjectsMock } from "./api";
 
 export const objectsListHandler = rest.get(
-  "/api/revise-objects",
+  "/api/revise-object",
   (req, res, ctx) => {
     const date = req.url.searchParams.get("date");
     if (!date) {

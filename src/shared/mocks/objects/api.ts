@@ -26,6 +26,7 @@ function getReviseObjectsByDateMock(date: string) {
   }
 
   const systems = getPaymentsSystemsByDateMock(date);
+  console.log(systems);
   const mapped = [
     objects.find((obj) => obj.name === "Табло")!,
     ...systems.map((sys) => {
@@ -45,7 +46,7 @@ function getReviseObjectsByDateMock(date: string) {
     [date]: [...mapped],
   };
   localStorage.setItem("revise-objects", JSON.stringify(updated));
-  return objects;
+  return mapped;
 }
 
 export function getReviseObjectsMock(date: string) {

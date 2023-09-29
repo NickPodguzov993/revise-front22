@@ -2,7 +2,7 @@ import { rest } from "msw";
 import { deleteReviseObjectFileMock } from "./api";
 
 export const objectFileDeleteHandler = rest.delete(
-  "/api/revise-objects/:id",
+  "/api/revise-object/:id",
   async (req, res, ctx) => {
     const id = Number(req.params.id);
     await deleteReviseObjectFileMock(id);

@@ -1,4 +1,4 @@
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button, Group, Stack, Title } from "@mantine/core";
@@ -18,17 +18,17 @@ import {
 import { SystemsList } from "@/widgets/system-list";
 import { SystemForm } from "@/widgets/system-form";
 import { MonthPickerInput } from "@mantine/dates";
+import { reviseObjectsUrl } from "@/entities/revise-object";
 
 export function SystemPage() {
   const [date, setDate] = usePersistedDate();
   const [formTarget, setFormTarget] = useState<
     PaymentsSystem["id"] | "new" | null
   >(null);
-  const {
-    data: systems,
-    isLoading,
-    mutate,
-  } = useSWR<PaymentsSystem[]>(paymentsSystemUrl(date));
+  const { mutate } = useSWRConfig();
+  const { data: systems, isLoading } = useSWR<PaymentsSystem[]>(
+    paymentsSystemUrl(date)
+  );
 
   function onDateChange(date: Date) {
     setDate(date);
@@ -49,7 +49,8 @@ export function SystemPage() {
     if (formTarget === id) {
       setFormTarget(null);
     }
-    mutate();
+    mutate(paymentsSystemUrl(date));
+    mutate(reviseObjectsUrl(date));
   }
   async function onFormSubmit(values: SystemFormValues) {
     if (!formTarget) return;
@@ -70,7 +71,8 @@ export function SystemPage() {
       }
     }
 
-    mutate();
+    mutate(paymentsSystemUrl(date));
+    mutate(reviseObjectsUrl(date));
     setFormTarget(null);
   }
   async function onDuplicate() {
@@ -82,7 +84,8 @@ export function SystemPage() {
       return;
     }
 
-    mutate();
+    mutate(paymentsSystemUrl(date));
+    mutate(reviseObjectsUrl(date));
     setFormTarget(null);
   }
 
