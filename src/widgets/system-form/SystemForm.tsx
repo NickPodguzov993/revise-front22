@@ -28,7 +28,7 @@ type SystemFormProps = {
 
 function makeFile() {
   return {
-    id: "",
+    idField: "",
     opType: "",
     project: "",
     date: "",

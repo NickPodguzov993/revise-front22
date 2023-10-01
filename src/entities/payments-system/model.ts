@@ -5,7 +5,8 @@ export type PaymentsSystem = {
 };
 
 export type PaymentsSystemFile = {
-  id: string;
+  id: number;
+  idField: string;
   opType: string;
   project: string;
   date: string;
