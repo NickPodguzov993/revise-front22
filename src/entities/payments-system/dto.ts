@@ -2,7 +2,7 @@ export type CreateSystemDTO = {
   name: string;
   date: string;
   files: {
-    id: string;
+    idField: string;
     opType: string;
     project: string;
     date: string;
@@ -14,7 +14,8 @@ export type CreateSystemDTO = {
 export type UpdateSystemDTO = {
   name: string;
   files: {
-    id: string;
+    id?: number;
+    idField: string;
     opType: string;
     project: string;
     date: string;

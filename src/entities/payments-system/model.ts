@@ -16,7 +16,7 @@ export type PaymentsSystemFile = {
 export type SystemFormValues = {
   name: string;
   files: {
-    id: string;
+    idField: string;
     opType: string;
     project: string;
     date: string;

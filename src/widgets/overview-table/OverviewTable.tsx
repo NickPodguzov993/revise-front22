@@ -61,7 +61,7 @@ export function OverviewTable({ data, loading }: OverviewTableProps) {
     data.flatMap((obj) =>
       obj.files.map((_, idx) => (
         <ObjectRow
-          key={`${obj.name}-${idx}`}
+          key={`${obj.id}-${idx}`}
           obj={obj}
           fileIdx={idx}
           onUpload={onUploadOpen}

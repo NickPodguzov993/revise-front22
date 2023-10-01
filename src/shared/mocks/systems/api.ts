@@ -27,7 +27,7 @@ type CreateSystemMockDTO = {
   name: string;
   date: string;
   files: {
-    id: string;
+    idField: string;
     opType: string;
     project: string;
     date: string;
@@ -38,7 +38,12 @@ type CreateSystemMockDTO = {
 
 export function createPaymentsSystemMock(payload: CreateSystemMockDTO) {
   const systems = getAllSystemsMock();
-  const system = { ...payload, id: Date.now() };
+  const id = Date.now();
+  const system = {
+    ...payload,
+    id,
+    files: payload.files.map((f, idx) => ({ ...f, id: id + idx + 1 })),
+  };
   const updated = {
     ...systems,
     [system.date]: [...(systems[system.date] || []), system],
@@ -70,7 +75,12 @@ export function updatePaymentsSystemMock(
   if (!system) {
     throw new Error("Not found");
   }
-  const updatedSystem = { ...payload, id: id, date: system.date };
+  const updatedSystem = {
+    ...payload,
+    id,
+    date: system.date,
+    files: payload.files.map((f, idx) => ({ ...f, id: id + idx + 1 })),
+  };
   const updated = {
     ...systems,
     [system.date]: [
@@ -112,7 +122,16 @@ export function duplicatePaymentsSystemsMock(payload: DuplicateSystemsMockDTO) {
   }
   const updated = {
     ...systems,
-    [payload.date]: [...systemsToCopy],
+    [payload.date]: [
+      ...systemsToCopy.map((s, idx1) => ({
+        ...s,
+        id: Date.now() + idx1,
+        files: s.files.map((f, idx2) => ({
+          ...f,
+          id: Date.now() + idx1 * 100 + idx2,
+        })),
+      })),
+    ],
   };
   localStorage.setItem("payments-systems", JSON.stringify(updated));
   return systemsToCopy;

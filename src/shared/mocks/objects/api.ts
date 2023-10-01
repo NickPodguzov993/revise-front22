@@ -2,7 +2,11 @@ import { getPaymentsSystemsByDateMock } from "../systems/api";
 
 function getAllReviseObjectsMock(): Record<
   string,
-  { id: number; name: string; files: { id: number; status: string }[] }[]
+  {
+    id: number;
+    name: string;
+    files: { id: number; status: string; message?: string }[];
+  }[]
 > {
   let saved = localStorage.getItem("revise-objects");
   if (!saved) {
@@ -33,10 +37,14 @@ function getReviseObjectsByDateMock(date: string) {
       return {
         id: sys.id,
         name: sys.name,
-        files: sys.files.map((f) => ({
-          id: f.id,
-          status: obj?.files.find((x) => x.id === f.id)?.status || "empty",
-        })),
+        files: sys.files.map((f) => {
+          const file = obj?.files.find((x) => x.id === f.id);
+          return {
+            id: f.id,
+            status: file?.status || "empty",
+            message: file?.message,
+          };
+        }),
       };
     }),
   ];
@@ -67,22 +75,21 @@ export function uploadReviseObjectFileMock(fileId: number) {
   )!;
   const isError = !(Date.now() % 3);
   const updatedObj = {
-    ...targetObj.files.find((f) => f.id === fileId),
-    status: isError ? "error" : "uploaded",
-    message: isError
-      ? "Не парьсе, тебе всего лишь выпал 0 в игре `Date.now() % 3`.\nПопробуй еще раз!"
-      : undefined,
-  };
-  console.log(isError, updatedObj);
-  const updated = {
-    ...allObjects,
-    [date]: [
-      ...objects.filter((obj) => obj.id !== targetObj.id),
+    ...targetObj,
+    files: [
+      ...targetObj.files.filter((f) => f.id !== fileId),
       {
-        ...targetObj,
-        files: [...targetObj.files.filter((f) => f.id !== fileId), updatedObj],
+        ...targetObj.files.find((f) => f.id === fileId),
+        status: isError ? "error" : "uploaded",
+        message: isError
+          ? "Не парьсе, тебе всего лишь выпал 0 в игре `Date.now() % 3`.\nПопробуй еще раз!"
+          : undefined,
       },
     ],
+  };
+  const updated = {
+    ...allObjects,
+    [date]: [...objects.filter((obj) => obj.id !== targetObj.id), updatedObj],
   };
   localStorage.setItem("revise-objects", JSON.stringify(updated));
   return updatedObj;
