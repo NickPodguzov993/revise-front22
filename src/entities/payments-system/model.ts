@@ -10,7 +10,7 @@ export type PaymentsSystemFile = {
   opType: string;
   project: string;
   date: string;
-  sum: string;
+  amount: string;
   currency: string;
 };
 
@@ -21,7 +21,7 @@ export type SystemFormValues = {
     opType: string;
     project: string;
     date: string;
-    sum: string;
+    amount: string;
     currency: string;
   }[];
 };

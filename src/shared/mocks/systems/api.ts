@@ -31,7 +31,7 @@ type CreateSystemMockDTO = {
     opType: string;
     project: string;
     date: string;
-    sum: string;
+    amount: string;
     currency: string;
   }[];
 };
@@ -59,7 +59,7 @@ type UpdateSystemMockDTO = {
     opType: string;
     project: string;
     date: string;
-    sum: string;
+    amount: string;
     currency: string;
   }[];
 };

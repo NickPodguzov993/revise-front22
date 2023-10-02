@@ -32,7 +32,7 @@ function makeFile() {
     opType: "",
     project: "",
     date: "",
-    sum: "",
+    amount: "",
     currency: "",
   };
 }
@@ -164,7 +164,7 @@ export function SystemForm({
                         <TextInput value="Сумма" readOnly />
                         <TextInput
                           placeholder="(без изменений)"
-                          {...form.getInputProps(`files.${idx}.sum`)}
+                          {...form.getInputProps(`files.${idx}.amount`)}
                         />
                       </Group>
                       <Group mt="xs" grow>

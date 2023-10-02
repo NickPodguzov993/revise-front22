@@ -6,7 +6,7 @@ export type CreateSystemDTO = {
     opType: string;
     project: string;
     date: string;
-    sum: string;
+    amount: string;
     currency: string;
   }[];
 };
@@ -19,7 +19,7 @@ export type UpdateSystemDTO = {
     opType: string;
     project: string;
     date: string;
-    sum: string;
+    amount: string;
     currency: string;
   }[];
 };
