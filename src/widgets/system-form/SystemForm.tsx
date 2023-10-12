@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Button,
   Card,
@@ -14,63 +14,51 @@ import {
   Title,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { TbChevronDown, TbTrash } from "react-icons/tb";
+import { TbChevronDown, TbPlus, TbTrash } from "react-icons/tb";
 
-import { PaymentsSystem, SystemFormValues } from "@/entities/payments-system";
+import { PaymentsSystem } from "@/entities/payments-system";
 
 import styles from "./system-form.module.css";
 
+export type SystemsFormValues = Omit<PaymentsSystem, "id">;
 type SystemFormProps = {
   target?: PaymentsSystem | "new" | null;
   onCancel?: () => void;
-  onSubmit?: (values: SystemFormValues) => void;
+  onSubmit?: (values: SystemsFormValues) => void;
 };
-
-function makeFile() {
-  return {
-    idField: "",
-    opType: "",
-    project: "",
-    date: "",
-    amount: "",
-    currency: "",
-  };
-}
 
 export function SystemForm({
   target,
   onCancel = () => {},
   onSubmit = () => {},
 }: SystemFormProps) {
-  const [states, setStates] = useState([true]);
-  const form = useForm<SystemFormValues>({
+  const [isFieldsOpened, setFieldsOpened] = useState(true);
+  const form = useForm<SystemsFormValues>({
     initialValues: {
       name: "",
-      files: [makeFile()],
+      filesCount: 1,
+      idField: "",
+      opType: "",
+      project: "",
+      date: "",
+      amount: "",
+      currency: "",
     },
   });
 
   useEffect(() => {
     form.reset();
     if (target && target !== "new") {
-      form.setValues(target);
+      form.setValues({ ...target });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [target]);
 
   function onAddFile() {
-    setStates((prev) => [...prev, true]);
-    form.insertListItem("files", makeFile());
+    form.setFieldValue("filesCount", form.values.filesCount + 1);
   }
-  function toggleVisibility(idx: number) {
-    setStates((prev) => [
-      ...prev.slice(0, idx),
-      !prev[idx],
-      ...prev.slice(idx + 1),
-    ]);
-  }
-  function deleteFile(idx: number) {
-    form.removeListItem("files", idx);
+  function onDeleteFile() {
+    form.setFieldValue("filesCount", form.values.filesCount - 1);
   }
 
   return (
@@ -100,88 +88,101 @@ export function SystemForm({
                   required
                   {...form.getInputProps("name")}
                 />
-                {form.values.files.map((_, idx) => (
-                  <Fragment key={idx}>
-                    <Group pr="xs" justify="space-between" align="end">
-                      <Title mt="md" order={3} fz="md">
-                        Поля файла #{idx + 1}
-                      </Title>
+
+                <Group pr="xs" justify="space-between" align="end">
+                  <Title mt="md" order={3} fz="md">
+                    Количество файлов: {form.values.filesCount}
+                  </Title>
+                  {target === "new" && (
+                    <>
                       <Group gap="xs">
                         <Button
-                          className={clsx(styles.fileExpand, {
-                            [styles.fileOpened]: states[idx],
-                          })}
                           variant="light"
+                          color="green"
                           size="xs"
                           px="xs"
-                          onClick={() => toggleVisibility(idx)}
+                          onClick={onAddFile}
+                          disabled={form.values.filesCount >= 5}
                         >
-                          <TbChevronDown size={16} />
+                          <TbPlus size={16} />
                         </Button>
-                        {form.values.files.length > 1 && (
-                          <Button
-                            variant="light"
-                            color="red"
-                            size="xs"
-                            px="xs"
-                            onClick={() => deleteFile(idx)}
-                          >
-                            <TbTrash size={16} />
-                          </Button>
-                        )}
+                        <Button
+                          variant="light"
+                          color="red"
+                          size="xs"
+                          px="xs"
+                          onClick={onDeleteFile}
+                          disabled={form.values.filesCount <= 1}
+                        >
+                          <TbTrash size={16} />
+                        </Button>
                       </Group>
-                    </Group>
-                    <Collapse in={states[idx]}>
-                      <Group mt="xs" grow>
-                        <TextInput value="id" readOnly />
-                        <TextInput
-                          placeholder="(без изменений)"
-                          {...form.getInputProps(`files.${idx}.id`)}
-                        />
-                      </Group>
-                      <Group mt="xs" grow>
-                        <TextInput value="Тип операции" readOnly />
-                        <TextInput
-                          placeholder="(без изменений)"
-                          {...form.getInputProps(`files.${idx}.opType`)}
-                        />
-                      </Group>
-                      <Group mt="xs" grow>
-                        <TextInput value="Проект" readOnly />
-                        <TextInput
-                          placeholder="(без изменений)"
-                          {...form.getInputProps(`files.${idx}.project`)}
-                        />
-                      </Group>
-                      <Group mt="xs" grow>
-                        <TextInput value="Дата" readOnly />
-                        <TextInput
-                          placeholder="(без изменений)"
-                          {...form.getInputProps(`files.${idx}.date`)}
-                        />
-                      </Group>
-                      <Group mt="xs" grow>
-                        <TextInput value="Сумма" readOnly />
-                        <TextInput
-                          placeholder="(без изменений)"
-                          {...form.getInputProps(`files.${idx}.amount`)}
-                        />
-                      </Group>
-                      <Group mt="xs" grow>
-                        <TextInput value="Валюта" readOnly />
-                        <TextInput
-                          placeholder="(без изменений)"
-                          {...form.getInputProps(`files.${idx}.currency`)}
-                        />
-                      </Group>
-                    </Collapse>
-                  </Fragment>
-                ))}
-                <Center my="lg">
-                  <Button w="50%" onClick={onAddFile}>
-                    Добавить файл
-                  </Button>
-                </Center>
+                    </>
+                  )}
+                </Group>
+                <Group pr="xs" justify="space-between" align="end">
+                  <Title mt="md" order={3} fz="md">
+                    Колонки в файлах
+                  </Title>
+                  <Group gap="xs">
+                    <Button
+                      className={clsx(
+                        styles.fileExpand,
+                        isFieldsOpened && styles.fileOpened
+                      )}
+                      variant="light"
+                      size="xs"
+                      px="xs"
+                      onClick={() => setFieldsOpened((v) => !v)}
+                    >
+                      <TbChevronDown size={16} />
+                    </Button>
+                  </Group>
+                </Group>
+                <Collapse in={isFieldsOpened}>
+                  <Group mt="xs" grow>
+                    <TextInput value="id" readOnly />
+                    <TextInput
+                      placeholder="(без изменений)"
+                      {...form.getInputProps("idField")}
+                    />
+                  </Group>
+                  <Group mt="xs" grow>
+                    <TextInput value="Тип операции" readOnly />
+                    <TextInput
+                      placeholder="(без изменений)"
+                      {...form.getInputProps("opType")}
+                    />
+                  </Group>
+                  <Group mt="xs" grow>
+                    <TextInput value="Проект" readOnly />
+                    <TextInput
+                      placeholder="(без изменений)"
+                      {...form.getInputProps("project")}
+                    />
+                  </Group>
+                  <Group mt="xs" grow>
+                    <TextInput value="Дата" readOnly />
+                    <TextInput
+                      placeholder="(без изменений)"
+                      {...form.getInputProps("date")}
+                    />
+                  </Group>
+                  <Group mt="xs" grow>
+                    <TextInput value="Сумма" readOnly />
+                    <TextInput
+                      placeholder="(без изменений)"
+                      {...form.getInputProps("amount")}
+                    />
+                  </Group>
+                  <Group mt="xs" grow>
+                    <TextInput value="Валюта" readOnly />
+                    <TextInput
+                      placeholder="(без изменений)"
+                      {...form.getInputProps("currency")}
+                    />
+                  </Group>
+                </Collapse>
               </Stack>
             </ScrollArea>
             <Divider mt="auto" />

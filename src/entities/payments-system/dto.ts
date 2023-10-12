@@ -1,27 +1,13 @@
-export type CreateSystemDTO = {
-  name: string;
-  date: string;
-  files: {
-    idField: string;
-    opType: string;
-    project: string;
-    date: string;
-    amount: string;
-    currency: string;
-  }[];
-};
-
-export type UpdateSystemDTO = {
-  name: string;
-  files: {
-    id?: number;
-    idField: string;
-    opType: string;
-    project: string;
-    date: string;
-    amount: string;
-    currency: string;
-  }[];
+export type PaymentSystemDTO = {
+  result: {
+    field_id: string;
+    field_type: string;
+    field_date: string;
+    field_project: string;
+    field_sum: string;
+    field_currency: string;
+    formate_datetime: string;
+  };
 };
 
 export type DuplicateSystemsDTO = {

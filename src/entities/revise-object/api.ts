@@ -2,7 +2,8 @@ import { getMonthDate } from "@/shared/utils";
 import { ReviseFile } from ".";
 
 export function reviseObjectsUrl(date: Date) {
-  return `/api/revise-object?date=${getMonthDate(date)}`;
+  // `/api/revise-object?date=${getMonthDate(date)}`;
+  return `/api/${getMonthDate(date)}`;
 }
 
 export async function uploadReviseFile(

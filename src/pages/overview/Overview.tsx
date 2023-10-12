@@ -5,14 +5,19 @@ import { MonthPickerInput } from "@mantine/dates";
 
 import { getMonthDate } from "@/shared/utils";
 import { usePersistedDate } from "@/shared/hooks";
-import { ReviseObject, reviseObjectsUrl } from "@/entities/revise-object";
+import {
+  reviseObjectsUrl,
+  mapReviseObjects,
+  ReviseListDTO,
+} from "@/entities/revise-object";
 import { OverviewTable } from "@/widgets/overview-table";
 
 import styles from "./overview.module.css";
 
 export function OverviewPage() {
   const [date, setDate] = usePersistedDate();
-  const { data, isLoading } = useSWR<ReviseObject[]>(reviseObjectsUrl(date));
+  const { data, isLoading } = useSWR<ReviseListDTO>(reviseObjectsUrl(date));
+  const reviseObjects = mapReviseObjects(data);
 
   return (
     <Stack className={styles.container} gap="lg">
@@ -33,7 +38,7 @@ export function OverviewPage() {
           Платежные системы
         </Button>
       </Group>
-      <OverviewTable data={data || []} loading={isLoading} />
+      <OverviewTable data={reviseObjects} loading={isLoading} />
       <Group justify="end">
         <Button
           size="md"

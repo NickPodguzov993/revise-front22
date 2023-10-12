@@ -6,19 +6,19 @@ import { TbArrowLeft } from "react-icons/tb";
 
 import { getMonthDate } from "@/shared/utils";
 import { usePersistedDate } from "@/shared/hooks";
+import { ReviseListDTO, reviseObjectsUrl } from "@/entities/revise-object";
 import {
   PaymentsSystem,
-  SystemFormValues,
   createPaymentsSystem,
   deletePaymentsSystem,
-  duplicatePaymentsSystems,
-  paymentsSystemUrl,
   updatePaymentsSystem,
+  mapPaymentsSystem,
+  paymentSystemUrl,
+  mapPaymentSystem,
 } from "@/entities/payments-system";
 import { SystemsList } from "@/widgets/system-list";
-import { SystemForm } from "@/widgets/system-form";
+import { SystemForm, SystemsFormValues } from "@/widgets/system-form";
 import { MonthPickerInput } from "@mantine/dates";
-import { reviseObjectsUrl } from "@/entities/revise-object";
 
 export function SystemPage() {
   const [date, setDate] = usePersistedDate();
@@ -26,9 +26,17 @@ export function SystemPage() {
     PaymentsSystem["id"] | "new" | null
   >(null);
   const { mutate } = useSWRConfig();
-  const { data: systems, isLoading } = useSWR<PaymentsSystem[]>(
-    paymentsSystemUrl(date)
+  const { data: systemsData, isLoading } = useSWR<ReviseListDTO>(
+    reviseObjectsUrl(date)
   );
+  const systems = mapPaymentsSystem(systemsData);
+  const { data: systemData } = useSWR(
+    formTarget && formTarget !== "new" ? paymentSystemUrl(formTarget) : null
+  );
+  const targetSystem = systems.find((s) => s.id === formTarget);
+  const system =
+    targetSystem && systemData && mapPaymentSystem(targetSystem, systemData);
+  console.log(system);
 
   function onDateChange(date: Date) {
     setDate(date);
@@ -49,16 +57,12 @@ export function SystemPage() {
     if (formTarget === id) {
       setFormTarget(null);
     }
-    mutate(paymentsSystemUrl(date));
     mutate(reviseObjectsUrl(date));
   }
-  async function onFormSubmit(values: SystemFormValues) {
+  async function onFormSubmit(values: SystemsFormValues) {
     if (!formTarget) return;
     if (formTarget === "new") {
-      const res = await createPaymentsSystem({
-        ...values,
-        date: getMonthDate(date),
-      });
+      const res = await createPaymentsSystem(date, values);
       if (!res.ok) {
         // TODO: handle
         return;
@@ -71,20 +75,23 @@ export function SystemPage() {
       }
     }
 
-    mutate(paymentsSystemUrl(date));
     mutate(reviseObjectsUrl(date));
     setFormTarget(null);
   }
   async function onDuplicate() {
     // TODO: show confirm
 
-    const res = await duplicatePaymentsSystems({ date: getMonthDate(date) });
-    if (!res.ok) {
-      // TODO: handle
+    if (systems.length) {
+      console.log("Payments systems list is not nil"); // TODO
       return;
     }
 
-    mutate(paymentsSystemUrl(date));
+    // const res = await duplicatePaymentsSystems();
+    // if (!res.ok) {
+    //   // TODO: handle
+    //   return;
+    // }
+
     mutate(reviseObjectsUrl(date));
     setFormTarget(null);
   }
@@ -115,7 +122,7 @@ export function SystemPage() {
             <TbArrowLeft />
             Назад
           </Button>
-          <Button size="sm" style={{ flex: 2 }} onClick={onDuplicate}>
+          <Button size="sm" style={{ flex: 2 }} onClick={onDuplicate} disabled>
             Скопировать из прошлого месяца
           </Button>
           <Button size="sm" style={{ flex: 1 }} onClick={onCreateSystem}>
@@ -124,11 +131,7 @@ export function SystemPage() {
         </Group>
       </Stack>
       <SystemForm
-        target={
-          formTarget === "new"
-            ? "new"
-            : systems?.find((s) => s.id === formTarget)
-        }
+        target={system || "new"}
         onCancel={onFormCancel}
         onSubmit={onFormSubmit}
       />

@@ -58,7 +58,7 @@ export function SystemsList({
                     {s.name}
                   </Text>
                   <Text c="dimmed" size="sm">
-                    Количество файлов: {s.files.length}
+                    Количество файлов: {s.filesCount}
                   </Text>
                 </div>
                 <Button
