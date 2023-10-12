@@ -36,7 +36,6 @@ export function SystemPage() {
   const targetSystem = systems.find((s) => s.id === formTarget);
   const system =
     targetSystem && systemData && mapPaymentSystem(targetSystem, systemData);
-  console.log(system);
 
   function onDateChange(date: Date) {
     setDate(date);
@@ -131,7 +130,7 @@ export function SystemPage() {
         </Group>
       </Stack>
       <SystemForm
-        target={system || "new"}
+        target={formTarget ? system || "new" : null}
         onCancel={onFormCancel}
         onSubmit={onFormSubmit}
       />

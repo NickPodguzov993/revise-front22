@@ -12,14 +12,14 @@ export async function uploadReviseFile(
 ) {
   const data = new FormData();
   data.append("file", new Blob([file]));
-  return fetch(`/api/revise-object/${fileId}`, {
+  return fetch(`/api/file/add?id_file=${fileId}`, {
     method: "POST",
     body: data,
   });
 }
 
 export async function deleteReviseFile(fileId: ReviseFile["id"]) {
-  return fetch(`/api/revise-object/${fileId}`, {
+  return fetch(`/api/file/${fileId}`, {
     method: "DELETE",
   });
 }

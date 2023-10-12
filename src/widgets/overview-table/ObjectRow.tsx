@@ -59,7 +59,7 @@ export function ObjectRow({
           <Button size="xs" onClick={() => onUpload(file.id)}>
             Загрузить
           </Button>
-          {file.status !== "empty" && (
+          {file.status !== FileStatus.Empty && (
             <Button
               px="xs"
               color="red"
@@ -78,12 +78,12 @@ export function ObjectRow({
 
 function getBadgeColor(status: FileStatus): DefaultMantineColor {
   switch (status) {
-    case "empty":
+    case FileStatus.Empty:
       return "gray";
-    case "uploaded":
+    case FileStatus.Uploaded:
       return "green";
-    case "error":
-      return "red";
+    // case "error":
+    //   return "red";
     default:
       return "blue";
   }

@@ -1,3 +1,5 @@
+import { FileStatus } from "./model";
+
 export type ReviseListDTO = {
   result: {
     id: number;
@@ -6,7 +8,7 @@ export type ReviseListDTO = {
     files: {
       id: number;
       file: null;
-      status: "NONE";
+      status: FileStatus;
     }[];
   }[];
 };

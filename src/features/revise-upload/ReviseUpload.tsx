@@ -32,7 +32,7 @@ export function ReviseUpload({
           }}
           radius="md"
           // accept={[MIME_TYPES.pdf]}
-          maxSize={30 * 1024 ** 2}
+          maxSize={100 * 1024 ** 2}
         >
           <div style={{ pointerEvents: "none" }}>
             <Group justify="center">
