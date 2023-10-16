@@ -37,7 +37,7 @@ export function OverviewTable({ data, loading }: OverviewTableProps) {
   }
   async function onUpload(file: FileWithPath) {
     const buffer = await file.arrayBuffer();
-    const res = await uploadReviseFile(fileId!, buffer);
+    const res = await uploadReviseFile(fileId!, buffer, file.name);
     if (!res.ok) {
       // TODO: handle
     }

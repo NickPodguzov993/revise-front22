@@ -82,8 +82,8 @@ function getBadgeColor(status: FileStatus): DefaultMantineColor {
       return "gray";
     case FileStatus.Uploaded:
       return "green";
-    // case "error":
-    //   return "red";
+    case FileStatus.Error:
+      return "red";
     default:
       return "blue";
   }

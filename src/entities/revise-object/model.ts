@@ -1,6 +1,7 @@
 export enum FileStatus {
   Empty = "NONE",
   Uploaded = "OK",
+  Error = "NOOK",
 }
 
 export type ReviseFile = {

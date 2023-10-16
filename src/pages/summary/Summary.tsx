@@ -1,13 +1,14 @@
 import useSWR from "swr";
 import { Link, useParams } from "react-router-dom";
 import { Button, Group, Stack, Text } from "@mantine/core";
-import { TbArrowLeft } from "react-icons/tb";
+import { TbArrowLeft, TbChevronLeft, TbChevronRight } from "react-icons/tb";
 // import { faker } from "@faker-js/faker"; // TODO: move to msw
 
 import { getMonthDate } from "@/shared/utils";
 import { summaryUrl } from "@/entities/summary";
 import { SummaryTable } from "@/widgets/summary-table";
 import { SummaryDTO } from "@/entities/summary/dto";
+import { useEffect, useState } from "react";
 
 // TODO: move to msw
 // function makeData(length: number, date: Date): SummaryRow[] {
@@ -33,7 +34,13 @@ import { SummaryDTO } from "@/entities/summary/dto";
 export function SummaryPage() {
   const params = useParams();
   const date = new Date(params.date!);
-  const { data, isLoading } = useSWR<SummaryDTO>(summaryUrl(date));
+  const [page, setPage] = useState(0);
+  const [total, setTotal] = useState(1);
+  const { data, isLoading } = useSWR<SummaryDTO>(summaryUrl(date, page));
+
+  useEffect(() => {
+    data && setTotal(data.result.total);
+  }, [data]);
 
   return (
     <Stack h="100%" pb="md" justify="space-between">
@@ -49,11 +56,27 @@ export function SummaryPage() {
           <TbArrowLeft />
           Назад
         </Button>
-        {data?.result.total && (
+        <Group>
+          <Button
+            p="sm"
+            size="md"
+            onClick={() => setPage((p) => p - 1)}
+            disabled={data?.result.page === 0}
+          >
+            <TbChevronLeft />
+          </Button>
           <Text c="dimmed">
-            Загружено {data.result.size} из {data.result.total} строк
+            {page + 1} из {total} страниц
           </Text>
-        )}
+          <Button
+            p="sm"
+            size="md"
+            onClick={() => setPage((p) => p + 1)}
+            disabled={page + 1 >= total}
+          >
+            <TbChevronRight />
+          </Button>
+        </Group>
         <Button
           component="a"
           size="md"

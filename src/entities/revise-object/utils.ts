@@ -6,8 +6,8 @@ export function getFileStatusTitle(status: FileStatus) {
       return "Не загружено";
     case FileStatus.Uploaded:
       return "Загружено";
-    // case "error":
-    //   return "Ошибка";
+    case FileStatus.Error:
+      return "Ошибка";
     default:
       return "Неизвестно";
   }

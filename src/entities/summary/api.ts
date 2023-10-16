@@ -1,5 +1,5 @@
 import { getMonthDate } from "@/shared/utils";
 
-export function summaryUrl(date: Date) {
-  return `/api/${getMonthDate(date)}/data?page=0&size=100`;
+export function summaryUrl(date: Date, page: number) {
+  return `/api/${getMonthDate(date)}/data?page=${page}&size=100`;
 }

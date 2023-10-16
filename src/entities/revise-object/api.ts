@@ -8,10 +8,11 @@ export function reviseObjectsUrl(date: Date) {
 
 export async function uploadReviseFile(
   fileId: ReviseFile["id"],
-  file: ArrayBuffer
+  file: ArrayBuffer,
+  fileName: string
 ) {
   const data = new FormData();
-  data.append("file", new Blob([file]));
+  data.append("file", new Blob([file]), fileName);
   return fetch(`/api/file/add?id_file=${fileId}`, {
     method: "POST",
     body: data,
