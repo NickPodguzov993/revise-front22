@@ -34,7 +34,6 @@ export function SummaryPage() {
   const params = useParams();
   const date = new Date(params.date!);
   const { data, isLoading } = useSWR<SummaryDTO>(summaryUrl(date));
-  console.log(data);
 
   return (
     <Stack h="100%" pb="md" justify="space-between">
@@ -55,7 +54,13 @@ export function SummaryPage() {
             Загружено {data.result.size} из {data.result.total} строк
           </Text>
         )}
-        <Button size="md" disabled={isLoading}>
+        <Button
+          component="a"
+          size="md"
+          disabled={isLoading}
+          href={`/api/${getMonthDate(date)}/download`}
+          target="_blank"
+        >
           Скачать отчет
         </Button>
       </Group>
