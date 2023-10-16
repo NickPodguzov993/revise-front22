@@ -61,7 +61,7 @@ export function SummaryPage() {
             p="sm"
             size="md"
             onClick={() => setPage((p) => p - 1)}
-            disabled={data?.result.page === 0}
+            disabled={page === 0}
           >
             <TbChevronLeft />
           </Button>
