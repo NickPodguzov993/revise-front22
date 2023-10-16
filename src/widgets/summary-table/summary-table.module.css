@@ -32,6 +32,6 @@
   }
 }
 
-.idCol {
-  width: 300px;
+.headerCol {
+  white-space: nowrap;
 }

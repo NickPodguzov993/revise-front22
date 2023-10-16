@@ -1,25 +1,33 @@
 import { Card, LoadingOverlay, ScrollArea, Table } from "@mantine/core";
-import { SummaryRow } from "@/entities/summary";
 
 import styles from "./summary-table.module.css";
 
 type SummaryTableProps = {
-  data: SummaryRow[];
+  data: Record<string, string | number | boolean | null>[];
   loading: boolean;
 };
 
-const columns = ["id", "Тип операции", "Проект", "Дата", "Сумма", "Валюта"];
+const statusColors = {
+  "Нет в ПС": "#FFFF0033",
+  'Нет в таблице "Табло"': "#00B0F033",
+  "Даты не совпадают": "#D9D9D933",
+  "Суммы не совпадают": "#92D05033",
+  "Не удалось получить курс валют": "#CC660033",
+} as Record<string, string>;
 
 export function SummaryTable({ data, loading }: SummaryTableProps) {
+  const columns = Object.keys(data[0] || {});
   const rows = data.length ? (
     data.map((item) => (
-      <Table.Tr key={item.id}>
-        <Table.Td>{item.idField}</Table.Td>
-        <Table.Td>{item.opType}</Table.Td>
-        <Table.Td>{item.project}</Table.Td>
-        <Table.Td>{item.date}</Table.Td>
-        <Table.Td>{item.amount}</Table.Td>
-        <Table.Td>{item.currency}</Table.Td>
+      <Table.Tr
+        key={item["ID транзакции"] as string}
+        style={{
+          backgroundColor: statusColors?.[item["Комментарий"] as string],
+        }}
+      >
+        {columns.map((col, idx) => (
+          <Table.Td key={idx}>{item[col]}</Table.Td>
+        ))}
       </Table.Tr>
     ))
   ) : (
@@ -35,12 +43,11 @@ export function SummaryTable({ data, loading }: SummaryTableProps) {
         <Table verticalSpacing="xs" withColumnBorders>
           <Table.Thead className={styles.header}>
             <Table.Tr>
-              <Table.Th className={styles.idCol}>id</Table.Th>
-              <Table.Th>Тип операции</Table.Th>
-              <Table.Th>Проект</Table.Th>
-              <Table.Th>Дата</Table.Th>
-              <Table.Th>Сумма</Table.Th>
-              <Table.Th>Валюта</Table.Th>
+              {columns.map((col) => (
+                <Table.Td key={col} className={styles.headerCol}>
+                  {col}
+                </Table.Td>
+              ))}
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>{rows}</Table.Tbody>
