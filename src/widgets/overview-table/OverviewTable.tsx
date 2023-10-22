@@ -3,6 +3,9 @@ import { useSWRConfig } from "swr";
 import { Card, LoadingOverlay, ScrollArea, Table } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { FileWithPath } from "@mantine/dropzone";
+import { notifications } from "@mantine/notifications";
+import { TbCheck, TbX } from "react-icons/tb";
+
 import { usePersistedDate } from "@/shared/hooks";
 import {
   ReviseFile,
@@ -36,25 +39,76 @@ export function OverviewTable({ data, loading }: OverviewTableProps) {
     close();
   }
   async function onUpload(file: FileWithPath) {
+    close();
+    const nId = notifications.show({
+      loading: true,
+      title: "Загрузка объекта сверки",
+      message: "Данные в процессе обработки",
+      autoClose: false,
+      withCloseButton: false,
+    });
     const buffer = await file.arrayBuffer();
     const res = await uploadReviseFile(fileId!, buffer, file.name);
+
     if (!res.ok) {
-      // TODO: handle
+      notifications.update({
+        id: nId,
+        color: "red",
+        message: "Что-то пошло не так...",
+        icon: <TbX size={18} />,
+        loading: false,
+        withCloseButton: true,
+        autoClose: 10_000,
+      });
+    } else {
+      notifications.update({
+        id: nId,
+        color: "teal",
+        message: "Данные успешно загружены!",
+        icon: <TbCheck size={18} />,
+        loading: false,
+        withCloseButton: true,
+        autoClose: 5_000,
+      });
     }
 
-    mutate(reviseObjectsUrl(date));
     setFileId(null);
-    close();
+    mutate(reviseObjectsUrl(date));
   }
   async function onDelete(fileId: ReviseFile["id"]) {
+    const nId = notifications.show({
+      loading: true,
+      title: "Удаление объекта сверки",
+      message: "Данные в процессе удаления",
+      autoClose: false,
+      withCloseButton: false,
+    });
+
     const res = await deleteReviseFile(fileId);
     if (!res.ok) {
-      // TODO: handle
+      const r = await res.json();
+      notifications.update({
+        id: nId,
+        color: "red",
+        message: r.error || "Что-то пошло не так...",
+        icon: <TbX size={18} />,
+        loading: false,
+        withCloseButton: true,
+        autoClose: 10_000,
+      });
+    } else {
+      notifications.update({
+        id: nId,
+        color: "teal",
+        message: "Данные успешно удалены!",
+        icon: <TbCheck size={18} />,
+        loading: false,
+        withCloseButton: true,
+        autoClose: 5_000,
+      });
     }
 
     mutate(reviseObjectsUrl(date));
-    setFileId(null);
-    close();
   }
 
   const rows = data.length ? (

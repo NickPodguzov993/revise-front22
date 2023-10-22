@@ -5,4 +5,5 @@ export type SummaryDTO = {
     size: number;
     total: number;
   };
+  error?: string;
 };

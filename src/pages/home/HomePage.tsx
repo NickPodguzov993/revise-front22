@@ -1,7 +1,10 @@
 import useSWR from "swr";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button, Group, Stack } from "@mantine/core";
 import { MonthPickerInput } from "@mantine/dates";
+import { notifications } from "@mantine/notifications";
+import { TbSettings, TbX } from "react-icons/tb";
 
 import { getMonthDate } from "@/shared/utils";
 import { usePersistedDate } from "@/shared/hooks";
@@ -12,12 +15,27 @@ import {
 } from "@/entities/revise-object";
 import { OverviewTable } from "@/widgets/overview-table";
 
-import styles from "./overview.module.css";
+import styles from "./home.module.css";
 
-export function OverviewPage() {
+export function HomePage() {
   const [date, setDate] = usePersistedDate();
-  const { data, isLoading } = useSWR<ReviseListDTO>(reviseObjectsUrl(date));
+  const { data, error, isLoading } = useSWR<ReviseListDTO>(
+    reviseObjectsUrl(date)
+  );
   const reviseObjects = mapReviseObjects(data);
+
+  useEffect(() => {
+    (error || data?.error) &&
+      notifications.show({
+        id: "revise-list",
+        title: "Объекты сверки",
+        message: data?.error?.slice(0, 100) || "Что-то пошло не так...",
+        color: "red",
+        icon: <TbX size={18} />,
+        withCloseButton: true,
+        autoClose: 10_000,
+      });
+  }, [data, error]);
 
   return (
     <Stack className={styles.container} gap="lg">
@@ -27,15 +45,16 @@ export function OverviewPage() {
           size="md"
           label="Месяц сверки"
           value={date}
-          onChange={setDate}
+          onChange={(d) => setDate(d!)}
         />
         <Button
           variant="light"
           size="md"
           component={Link}
-          to={`/systems?date=${getMonthDate(date)}`}
+          leftSection={<TbSettings />}
+          to={`/settings?date=${getMonthDate(date)}`}
         >
-          Платежные системы
+          Настройки
         </Button>
       </Group>
       <OverviewTable data={reviseObjects} loading={isLoading} />

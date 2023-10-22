@@ -11,4 +11,5 @@ export type ReviseListDTO = {
       status: FileStatus;
     }[];
   }[];
+  error?: string;
 };
