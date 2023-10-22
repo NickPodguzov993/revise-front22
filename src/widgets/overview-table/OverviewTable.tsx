@@ -4,7 +4,7 @@ import { Card, LoadingOverlay, ScrollArea, Table } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { FileWithPath } from "@mantine/dropzone";
 import { notifications } from "@mantine/notifications";
-import { TbCheck, TbX } from "react-icons/tb";
+import { TbCheck, TbTrash } from "react-icons/tb";
 
 import { usePersistedDate } from "@/shared/hooks";
 import {
@@ -55,7 +55,6 @@ export function OverviewTable({ data, loading }: OverviewTableProps) {
         id: nId,
         color: "red",
         message: "Что-то пошло не так...",
-        icon: <TbX size={18} />,
         loading: false,
         withCloseButton: true,
         autoClose: 10_000,
@@ -91,7 +90,6 @@ export function OverviewTable({ data, loading }: OverviewTableProps) {
         id: nId,
         color: "red",
         message: r.error || "Что-то пошло не так...",
-        icon: <TbX size={18} />,
         loading: false,
         withCloseButton: true,
         autoClose: 10_000,
@@ -101,7 +99,7 @@ export function OverviewTable({ data, loading }: OverviewTableProps) {
         id: nId,
         color: "teal",
         message: "Данные успешно удалены!",
-        icon: <TbCheck size={18} />,
+        icon: <TbTrash size={18} />,
         loading: false,
         withCloseButton: true,
         autoClose: 5_000,

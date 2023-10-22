@@ -58,9 +58,8 @@ export async function deletePaymentsSystem(id: number) {
 }
 
 export async function duplicatePaymentsSystems() {
-  // payload: DuplicateSystemsDTO
-  // return fetch(`/api/ps/${}/copy-to/${date}`), {
-  //   method: "POST",
-  //   body: JSON.stringify(payload),
-  // });
+  return fetch(`/api/ps/${"id"}/copy-to/${"date"}`, {
+    method: "POST",
+    // body: JSON.stringify(payload),
+  });
 }

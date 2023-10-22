@@ -1,12 +1,7 @@
 import useSWR from "swr";
 import { Link, useParams } from "react-router-dom";
 import { Button, Group, Stack, Text } from "@mantine/core";
-import {
-  TbArrowLeft,
-  TbChevronLeft,
-  TbChevronRight,
-  TbX,
-} from "react-icons/tb";
+import { TbArrowLeft, TbChevronLeft, TbChevronRight } from "react-icons/tb";
 // import { faker } from "@faker-js/faker"; // TODO: move to msw
 
 import { getMonthDate } from "@/shared/utils";
@@ -52,7 +47,6 @@ export function SummaryPage() {
         title: "Результат сверки",
         message: data?.error?.slice(0, 100) || "Что-то пошло не так...",
         color: "red",
-        icon: <TbX size={18} />,
         withCloseButton: true,
         autoClose: 10_000,
       });

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { Button, Group, Stack } from "@mantine/core";
 import { MonthPickerInput } from "@mantine/dates";
 import { notifications } from "@mantine/notifications";
-import { TbSettings, TbX } from "react-icons/tb";
+import { TbSettings } from "react-icons/tb";
 
 import { getMonthDate } from "@/shared/utils";
 import { usePersistedDate } from "@/shared/hooks";
@@ -31,7 +31,6 @@ export function HomePage() {
         title: "Объекты сверки",
         message: data?.error?.slice(0, 100) || "Что-то пошло не так...",
         color: "red",
-        icon: <TbX size={18} />,
         withCloseButton: true,
         autoClose: 10_000,
       });

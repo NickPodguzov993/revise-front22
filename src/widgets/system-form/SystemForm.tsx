@@ -14,7 +14,7 @@ import {
   Title,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { TbChevronDown, TbPlus, TbTrash } from "react-icons/tb";
+import { TbChevronDown, TbPlus, TbTrash, TbX } from "react-icons/tb";
 
 import { PaymentsSystem } from "@/entities/payments-system";
 
@@ -74,13 +74,26 @@ export function SystemForm({
           style={{ flex: 1, height: "100%" }}
           onSubmit={form.onSubmit(onSubmit)}
         >
-          <Stack h="100%" p="md">
-            <Title order={2} fz="xl">
-              {target === "new" ? "Создание" : "Редактирование"} платежной
-              системы
-            </Title>
+          <Stack h="100%" py="md">
+            <Group pl="md" justify="space-between">
+              <Title order={2} fz="xl">
+                {target === "new" ? "Создание" : "Редактирование"} платежной
+                системы
+              </Title>
+
+              <Button
+                h={40}
+                px="md"
+                color="white"
+                size="xs"
+                variant="transparent"
+                onClick={onCancel}
+              >
+                <TbX size={20} />
+              </Button>
+            </Group>
             <Divider />
-            <ScrollArea>
+            <ScrollArea px="md">
               <Stack pr="md" gap="sm">
                 <TextInput
                   label="Название"
@@ -141,44 +154,32 @@ export function SystemForm({
                 </Group>
                 <Collapse in={isFieldsOpened}>
                   <Group mt="xs" grow>
-                    <TextInput value="id" readOnly />
                     <TextInput
-                      placeholder="(без изменений)"
+                      placeholder="id"
                       {...form.getInputProps("idField")}
                     />
-                  </Group>
-                  <Group mt="xs" grow>
-                    <TextInput value="Тип операции" readOnly />
                     <TextInput
-                      placeholder="(без изменений)"
+                      placeholder="Тип операции"
                       {...form.getInputProps("opType")}
                     />
                   </Group>
                   <Group mt="xs" grow>
-                    <TextInput value="Проект" readOnly />
                     <TextInput
-                      placeholder="(без изменений)"
+                      placeholder="Проект"
                       {...form.getInputProps("project")}
                     />
-                  </Group>
-                  <Group mt="xs" grow>
-                    <TextInput value="Дата" readOnly />
                     <TextInput
-                      placeholder="(без изменений)"
+                      placeholder="Дата"
                       {...form.getInputProps("date")}
                     />
                   </Group>
                   <Group mt="xs" grow>
-                    <TextInput value="Сумма" readOnly />
                     <TextInput
-                      placeholder="(без изменений)"
+                      placeholder="Сумма"
                       {...form.getInputProps("amount")}
                     />
-                  </Group>
-                  <Group mt="xs" grow>
-                    <TextInput value="Валюта" readOnly />
                     <TextInput
-                      placeholder="(без изменений)"
+                      placeholder="Валюта"
                       {...form.getInputProps("currency")}
                     />
                   </Group>
@@ -186,11 +187,10 @@ export function SystemForm({
               </Stack>
             </ScrollArea>
             <Divider mt="auto" />
-            <Group grow>
-              <Button color="red" onClick={onCancel}>
-                Отмена
+            <Group px="md" justify="center" grow>
+              <Button maw="50%" type="submit">
+                Сохранить
               </Button>
-              <Button type="submit">Сохранить</Button>
             </Group>
           </Stack>
         </form>

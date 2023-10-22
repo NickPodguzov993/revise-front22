@@ -2,7 +2,7 @@ import useSWR, { useSWRConfig } from "swr";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button, Group, Stack, Title } from "@mantine/core";
-import { TbArrowLeft, TbCheck, TbX } from "react-icons/tb";
+import { TbArrowLeft, TbCheck, TbCopy, TbTrash } from "react-icons/tb";
 
 import { getMonthDate } from "@/shared/utils";
 import { usePersistedDate } from "@/shared/hooks";
@@ -15,6 +15,7 @@ import {
   mapPaymentsSystem,
   paymentSystemUrl,
   mapPaymentSystem,
+  duplicatePaymentsSystems,
 } from "@/entities/payments-system";
 import { SystemsList } from "@/widgets/system-list";
 import { SystemForm, SystemsFormValues } from "@/widgets/system-form";
@@ -49,7 +50,6 @@ export function SettingsPage() {
         title: "Платежные системы",
         message: systemsList?.error?.slice(0, 100) || "Что-то пошло не так...",
         color: "red",
-        icon: <TbX size={18} />,
         withCloseButton: true,
         autoClose: 10_000,
       });
@@ -62,7 +62,6 @@ export function SettingsPage() {
         title: "Информация о объекте",
         message: systemDetail?.error?.slice(0, 100) || "Что-то пошло не так...",
         color: "red",
-        icon: <TbX size={18} />,
         withCloseButton: true,
         autoClose: 10_000,
       });
@@ -97,7 +96,6 @@ export function SettingsPage() {
         id: nId,
         color: "red",
         message: r.error || "Что-то пошло не так...",
-        icon: <TbX size={18} />,
         loading: false,
         withCloseButton: true,
         autoClose: 10_000,
@@ -107,7 +105,7 @@ export function SettingsPage() {
         id: nId,
         color: "teal",
         message: "Платежная система успешно удалена!",
-        icon: <TbCheck size={18} />,
+        icon: <TbTrash size={18} />,
         loading: false,
         withCloseButton: true,
         autoClose: 5_000,
@@ -143,7 +141,6 @@ export function SettingsPage() {
         id: nId,
         color: "red",
         message: r.error || "Что-то пошло не так...",
-        icon: <TbX size={18} />,
         loading: false,
         withCloseButton: true,
         autoClose: 10_000,
@@ -166,31 +163,70 @@ export function SettingsPage() {
     setFormTarget(null);
   }
   async function onDuplicate() {
-    // TODO: show confirm
-
     if (systems.length) {
-      console.log("Payments systems list is not nil"); // TODO
+      notifications.show({
+        color: "red",
+        title: "Невозможно скопировать",
+        message: "Удалите все текущие платежные системы",
+        autoClose: 10_000,
+      });
       return;
     }
+    setFormTarget(null);
+    const nId = notifications.show({
+      loading: true,
+      title: "Копирование данных",
+      message: "Немного подождите",
+      autoClose: false,
+      withCloseButton: false,
+    });
 
-    // const res = await duplicatePaymentsSystems();
-    // if (!res.ok) {
-    //   // TODO: handle
-    //   return;
-    // }
+    const res = await duplicatePaymentsSystems();
+    if (!res.ok) {
+      const r = await res.json();
+      notifications.update({
+        id: nId,
+        color: "red",
+        message: r.error || "Что-то пошло не так...",
+        loading: false,
+        withCloseButton: true,
+        autoClose: 10_000,
+      });
+    } else {
+      notifications.update({
+        id: nId,
+        color: "teal",
+        message: "Платежные системы успешно скопированы!",
+        icon: <TbCopy size={18} />,
+        loading: false,
+        withCloseButton: true,
+        autoClose: 5_000,
+      });
+    }
 
     mutate(reviseObjectsUrl(date));
-    setFormTarget(null);
   }
 
   return (
     <Group h="100%" grow>
       <Stack h="100%" pt="xs">
-        <Group justify="space-between" pr="md">
-          <Title order={2} fz="xl">
+        <Group justify="space-between" pr="md" grow>
+          <Button
+            w="min-content"
+            size="sm"
+            variant="subtle"
+            component={Link}
+            to={`/?date=${getMonthDate(date)}`}
+            styles={{ root: { flex: 0 }, label: { gap: "0.5rem" } }}
+          >
+            <TbArrowLeft />
+            Назад
+          </Button>
+          <Title order={2} fz="xl" style={{ minWidth: "max-content" }}>
             Платежные системы
           </Title>
           <MonthPickerInput
+            style={{ flex: 0, minWidth: "max-content" }}
             size="xs"
             value={date}
             onChange={(d) => onDateChange(d!)}
@@ -206,14 +242,10 @@ export function SettingsPage() {
         <Group pr="md" mt="auto">
           <Button
             size="sm"
-            component={Link}
-            to={`/?date=${getMonthDate(date)}`}
-            styles={{ root: { flex: 1 }, label: { gap: "0.5rem" } }}
+            variant="light"
+            style={{ flex: 2 }}
+            onClick={onDuplicate}
           >
-            <TbArrowLeft />
-            Назад
-          </Button>
-          <Button size="sm" style={{ flex: 2 }} onClick={onDuplicate} disabled>
             Скопировать из прошлого месяца
           </Button>
           <Button size="sm" style={{ flex: 1 }} onClick={onCreateSystem}>

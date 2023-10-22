@@ -64,8 +64,8 @@ export function ReviseUpload({
               <Dropzone.Idle>Загрузите файл</Dropzone.Idle>
             </Text>
             <Text ta="center" fz="sm" mt="xs" c="dimmed">
-              Drag&apos;n&apos;drop files here to upload. We can accept only{" "}
-              <i>.abc</i> files that are less than 30mb in size.
+              Перетащите файл сюда, чтобы загрузить. Принимаются файлы Excel
+              формата, размером до 100МБ.
             </Text>
           </div>
         </Dropzone>
