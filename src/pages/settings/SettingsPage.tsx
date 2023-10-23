@@ -17,7 +17,6 @@ import {
   mapPaymentsSystem,
   paymentSystemUrl,
   mapPaymentSystem,
-  duplicatePaymentsSystems,
 } from "@/entities/payments-system";
 import { SystemsList } from "@/widgets/system-list";
 import {
@@ -125,15 +124,21 @@ export function SettingsPage() {
     });
     const res = await deletePaymentsSystem(id);
     if (!res.ok) {
-      const r = await res.json();
-      notifications.update({
-        id: nId,
-        color: "red",
-        message: r.error || "Что-то пошло не так...",
-        loading: false,
-        withCloseButton: true,
-        autoClose: 10_000,
-      });
+      let r: { error?: string } | undefined;
+      try {
+        r = await res.json();
+      } catch (err) {
+        console.error(err);
+      } finally {
+        notifications.update({
+          id: nId,
+          color: "red",
+          message: r?.error || "Что-то пошло не так...",
+          loading: false,
+          withCloseButton: true,
+          autoClose: 10_000,
+        });
+      }
     } else {
       notifications.update({
         id: nId,
@@ -169,15 +174,21 @@ export function SettingsPage() {
       res = await updatePaymentsSystem(formTarget as number, values);
     }
     if (!res.ok) {
-      const r = await res.json();
-      notifications.update({
-        id: nId,
-        color: "red",
-        message: r.error || "Что-то пошло не так...",
-        loading: false,
-        withCloseButton: true,
-        autoClose: 10_000,
-      });
+      let r: { error?: string } | undefined;
+      try {
+        r = await res.json();
+      } catch (err) {
+        console.error(err);
+      } finally {
+        notifications.update({
+          id: nId,
+          color: "red",
+          message: r?.error || "Что-то пошло не так...",
+          loading: false,
+          withCloseButton: true,
+          autoClose: 10_000,
+        });
+      }
     } else {
       notifications.update({
         id: nId,
@@ -202,15 +213,21 @@ export function SettingsPage() {
     });
     const res = await updateScoreboard(scId!, values);
     if (!res.ok) {
-      const r = await res.json();
-      notifications.update({
-        id: nId,
-        color: "red",
-        message: r.error || "Что-то пошло не так...",
-        loading: false,
-        withCloseButton: true,
-        autoClose: 10_000,
-      });
+      let r: { error?: string } | undefined;
+      try {
+        r = await res.json();
+      } catch (err) {
+        console.error(err);
+      } finally {
+        notifications.update({
+          id: nId,
+          color: "red",
+          message: r?.error || "Что-то пошло не так...",
+          loading: false,
+          withCloseButton: true,
+          autoClose: 10_000,
+        });
+      }
     } else {
       notifications.update({
         id: nId,
@@ -238,16 +255,17 @@ export function SettingsPage() {
     mutate(reviseObjectsUrl(date));
     setFormTarget(null);
   }
+  // TODO
   async function onDuplicate() {
-    if (systems.length) {
-      notifications.show({
-        color: "red",
-        title: "Невозможно скопировать",
-        message: "Удалите все текущие платежные системы",
-        autoClose: 10_000,
-      });
-      return;
-    }
+    // if (systems.length) {
+    //   notifications.show({
+    //     color: "red",
+    //     title: "Невозможно скопировать",
+    //     message: "Удалите все текущие платежные системы",
+    //     autoClose: 10_000,
+    //   });
+    //   return;
+    // }
     setFormTarget(null);
     const nId = notifications.show({
       loading: true,
@@ -256,29 +274,52 @@ export function SettingsPage() {
       autoClose: false,
       withCloseButton: false,
     });
+    const res = await fetch(
+      reviseObjectsUrl(new Date(new Date(date).setMonth(date.getMonth() - 1)))
+    )
+      .then((res) => res.json())
+      .then((data: ReviseListDTO) =>
+        Promise.all(
+          data?.result
+            .filter((obj) => obj.name !== "Табло")
+            .map((sys) => sys.id_ps)
+            .map((id) =>
+              fetch(`/api/ps/${id}/copy-to/${getMonthDate(date)}`, {
+                method: "POST",
+              })
+            ) || []
+        )
+      );
+    console.log(res);
 
-    const res = await duplicatePaymentsSystems();
-    if (!res.ok) {
-      const r = await res.json();
-      notifications.update({
-        id: nId,
-        color: "red",
-        message: r.error || "Что-то пошло не так...",
-        loading: false,
-        withCloseButton: true,
-        autoClose: 10_000,
-      });
-    } else {
-      notifications.update({
-        id: nId,
-        color: "teal",
-        message: "Платежные системы успешно скопированы!",
-        icon: <TbCopy size={18} />,
-        loading: false,
-        withCloseButton: true,
-        autoClose: 5_000,
-      });
-    }
+    // const res = await duplicatePaymentsSystems();
+    // if (!res.ok) {
+    //   let r: { error?: string } | undefined;
+    //   try {
+    //     r = await res.json();
+    //   } catch (err) {
+    //     console.error(err);
+    //   } finally {
+    //     notifications.update({
+    //       id: nId,
+    //       color: "red",
+    //       message: r?.error || "Что-то пошло не так...",
+    //       loading: false,
+    //       withCloseButton: true,
+    //       autoClose: 10_000,
+    //     });
+    //   }
+    // } else {
+    notifications.update({
+      id: nId,
+      color: "teal",
+      message: "Платежные системы успешно скопированы!",
+      icon: <TbCopy size={18} />,
+      loading: false,
+      withCloseButton: true,
+      autoClose: 5_000,
+    });
+    // }
 
     mutate(reviseObjectsUrl(date));
   }

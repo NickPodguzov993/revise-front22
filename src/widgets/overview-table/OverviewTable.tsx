@@ -85,15 +85,21 @@ export function OverviewTable({ data, loading }: OverviewTableProps) {
 
     const res = await deleteReviseFile(fileId);
     if (!res.ok) {
-      const r = await res.json();
-      notifications.update({
-        id: nId,
-        color: "red",
-        message: r.error || "Что-то пошло не так...",
-        loading: false,
-        withCloseButton: true,
-        autoClose: 10_000,
-      });
+      let r: { error?: string } | undefined;
+      try {
+        r = await res.json();
+      } catch (err) {
+        console.error(err);
+      } finally {
+        notifications.update({
+          id: nId,
+          color: "red",
+          message: r?.error || "Что-то пошло не так...",
+          loading: false,
+          withCloseButton: true,
+          autoClose: 10_000,
+        });
+      }
     } else {
       notifications.update({
         id: nId,
