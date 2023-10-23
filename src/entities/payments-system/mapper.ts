@@ -17,16 +17,19 @@ export function mapPaymentSystem(
   };
 }
 
+type ScoreboardId = number;
+
 export function mapPaymentsSystem(
   dto: ReviseListDTO | null | undefined
-): PaymentsSystem[] {
-  return (
+): [PaymentsSystem[], ScoreboardId | undefined] {
+  return [
     dto?.result
-      .filter((rev) => !!rev.id_ps)
+      .filter((rev) => rev.name !== "Табло")
       .map((rev) => ({
-        id: rev.id_ps!,
+        id: rev.id_ps,
         name: rev.name,
         filesCount: rev.files.length,
-      })) || []
-  );
+      })) || [],
+    dto?.result.find((rev) => rev.name === "Табло")?.id_ps,
+  ];
 }

@@ -2,6 +2,8 @@ import useSWR, { useSWRConfig } from "swr";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button, Group, Stack, Title } from "@mantine/core";
+import { MonthPickerInput } from "@mantine/dates";
+import { notifications } from "@mantine/notifications";
 import { TbArrowLeft, TbCheck, TbCopy, TbTrash } from "react-icons/tb";
 
 import { getMonthDate } from "@/shared/utils";
@@ -18,14 +20,22 @@ import {
   duplicatePaymentsSystems,
 } from "@/entities/payments-system";
 import { SystemsList } from "@/widgets/system-list";
-import { SystemForm, SystemsFormValues } from "@/widgets/system-form";
-import { MonthPickerInput } from "@mantine/dates";
-import { notifications } from "@mantine/notifications";
+import {
+  ObjectForm,
+  ScoreboardFormValues,
+  SystemsFormValues,
+} from "@/widgets/object-form";
+import {
+  Scoreboard,
+  mapScoreboard,
+  scoreboardDetailUrl,
+  updateScoreboard,
+} from "@/entities/scoreboard";
 
 export function SettingsPage() {
   const [date, setDate] = usePersistedDate();
   const [formTarget, setFormTarget] = useState<
-    PaymentsSystem["id"] | "new" | null
+    PaymentsSystem["id"] | "scoreboard" | "new" | null
   >(null);
   const { mutate } = useSWRConfig();
   const {
@@ -33,15 +43,26 @@ export function SettingsPage() {
     isLoading,
     error: listErr,
   } = useSWR<ReviseListDTO>(reviseObjectsUrl(date));
-  const systems = mapPaymentsSystem(systemsList);
+  const [systems, scId] = mapPaymentsSystem(systemsList);
+  const { data: scoreboardRaw, error: scoreboardErr } = useSWR(
+    scId ? scoreboardDetailUrl(scId) : null
+  );
   const { data: systemDetail, error: detailErr } = useSWR(
-    formTarget && formTarget !== "new" ? paymentSystemUrl(formTarget) : null
+    formTarget && formTarget !== "new" && formTarget !== "scoreboard"
+      ? paymentSystemUrl(formTarget)
+      : null
   );
   const targetSystem = systems.find((s) => s.id === formTarget);
   const system =
     targetSystem &&
     systemDetail &&
     mapPaymentSystem(targetSystem, systemDetail);
+  const scoreboard = mapScoreboard(scoreboardRaw);
+
+  const allSystems: (PaymentsSystem | Scoreboard)[] = [
+    ...(scoreboard ? [scoreboard] : []),
+    ...(systems || []),
+  ];
 
   useEffect(() => {
     if (listErr || systemsList?.error) {
@@ -67,12 +88,25 @@ export function SettingsPage() {
       });
     }
   }, [systemDetail, detailErr]);
+  useEffect(() => {
+    if (scoreboardErr || scoreboardRaw?.error) {
+      notifications.show({
+        id: "scoreboard-detail",
+        title: "Табло",
+        message:
+          scoreboardRaw?.error?.slice(0, 100) || "Что-то пошло не так...",
+        color: "red",
+        withCloseButton: true,
+        autoClose: 10_000,
+      });
+    }
+  }, [scoreboardRaw, scoreboardErr]);
 
   function onDateChange(date: Date) {
     setDate(date);
     setFormTarget(null);
   }
-  function onSystemSelect(id: PaymentsSystem["id"]) {
+  function onSystemSelect(id: PaymentsSystem["id"] | "scoreboard") {
     setFormTarget(id);
   }
   function onCreateSystem() {
@@ -117,8 +151,7 @@ export function SettingsPage() {
     }
     mutate(reviseObjectsUrl(date));
   }
-  async function onFormSubmit(values: SystemsFormValues) {
-    if (!formTarget) return;
+  async function submitSystem(values: SystemsFormValues) {
     const isNew = formTarget === "new";
     const nId = notifications.show({
       loading: true,
@@ -133,7 +166,7 @@ export function SettingsPage() {
     if (formTarget === "new") {
       res = await createPaymentsSystem(date, values);
     } else {
-      res = await updatePaymentsSystem(formTarget, values);
+      res = await updatePaymentsSystem(formTarget as number, values);
     }
     if (!res.ok) {
       const r = await res.json();
@@ -157,6 +190,49 @@ export function SettingsPage() {
         withCloseButton: true,
         autoClose: 5_000,
       });
+    }
+  }
+  async function submitScoreboard(values: ScoreboardFormValues) {
+    const nId = notifications.show({
+      loading: true,
+      title: 'Редактирование объекта "Табло"',
+      message: "Немного подождите",
+      autoClose: false,
+      withCloseButton: false,
+    });
+    const res = await updateScoreboard(scId!, values);
+    if (!res.ok) {
+      const r = await res.json();
+      notifications.update({
+        id: nId,
+        color: "red",
+        message: r.error || "Что-то пошло не так...",
+        loading: false,
+        withCloseButton: true,
+        autoClose: 10_000,
+      });
+    } else {
+      notifications.update({
+        id: nId,
+        color: "teal",
+        message: "Табло успешно изменено!",
+        icon: <TbCheck size={18} />,
+        loading: false,
+        withCloseButton: true,
+        autoClose: 5_000,
+      });
+    }
+
+    mutate(scoreboardDetailUrl(scId!));
+  }
+  async function onFormSubmit(
+    values: SystemsFormValues | ScoreboardFormValues
+  ) {
+    if (!formTarget) return;
+    if (formTarget === "scoreboard") {
+      submitScoreboard(values as ScoreboardFormValues);
+    } else {
+      submitSystem(values as SystemsFormValues);
     }
 
     mutate(reviseObjectsUrl(date));
@@ -223,7 +299,7 @@ export function SettingsPage() {
             Назад
           </Button>
           <Title order={2} fz="xl" style={{ minWidth: "max-content" }}>
-            Платежные системы
+            Настройки объектов сверки
           </Title>
           <MonthPickerInput
             style={{ flex: 0, minWidth: "max-content" }}
@@ -233,7 +309,7 @@ export function SettingsPage() {
           />
         </Group>
         <SystemsList
-          systems={systems || []}
+          systems={allSystems}
           isLoading={isLoading}
           selected={formTarget !== "new" ? formTarget : null}
           onSelect={onSystemSelect}
@@ -253,8 +329,14 @@ export function SettingsPage() {
           </Button>
         </Group>
       </Stack>
-      <SystemForm
-        target={formTarget ? system || "new" : null}
+      <ObjectForm
+        target={
+          !formTarget
+            ? null
+            : formTarget === "scoreboard"
+            ? scoreboard
+            : system || "new"
+        }
         onCancel={onFormCancel}
         onSubmit={onFormSubmit}
       />

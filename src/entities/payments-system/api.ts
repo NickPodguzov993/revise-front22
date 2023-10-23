@@ -12,7 +12,7 @@ export async function createPaymentsSystem(
     method: "POST",
     headers: new Headers({ "Content-Type": "application/json" }),
     body: JSON.stringify({
-      psinfo: {
+      info: {
         field_id: payload.idField || "id",
         field_type: payload.opType || "",
         field_date: payload.date || "",
