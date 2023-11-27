@@ -1,0 +1,31 @@
+stages:
+    - build
+    - push
+
+default:
+    before_script:
+        - docker info
+        - echo -n $REGISTRY_PASSWORD | docker login -u $REGISTRY_USER --password-stdin $REGISTRY
+
+Build:
+    stage: build
+    script:
+        - >
+          docker build 
+          --label "org.opencontainers.image.title=$CI_PROJECT_TITLE"
+          --label "org.opencontainers.image.created=$CI_JOB_STARTED_AT"
+          --label "org.opencontainers.image.revision=$CI_COMMIT_SHA"
+          --tag $REGISTRY/$CI_PROJECT_NAME:$CI_COMMIT_SHA
+          .
+        - docker push $REGISTRY/$CI_PROJECT_NAME:$CI_COMMIT_SHA
+
+Push latest:
+    variables:
+        GIT_STRATEGY: none
+    stage: push
+    only:
+        - master
+    script:
+        - docker pull $REGISTRY/$CI_PROJECT_NAME:$CI_COMMIT_SHA
+        - docker tag  $REGISTRY/$CI_PROJECT_NAME:$CI_COMMIT_SHA $REGISTRY/$CI_PROJECT_NAME:latest
+        - docker push $REGISTRY/$CI_PROJECT_NAME:latest
