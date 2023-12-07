@@ -26,8 +26,8 @@ type ObjectRowProps = {
 export function ObjectRow({
   obj,
   fileIdx = 0,
-  onUpload = () => {},
-  onDelete = () => {},
+  onUpload = () => { },
+  onDelete = () => { },
 }: ObjectRowProps) {
   const filesCount = obj.files.length;
   const file = obj.files[fileIdx];
@@ -56,9 +56,12 @@ export function ObjectRow({
       </Table.Td>
       <Table.Td>
         <Group gap="sm">
-          <Button size="xs" onClick={() => onUpload(file.id)}>
-            Загрузить
-          </Button>
+          {file.status == "empty" && (
+            <Button
+              size="xs"
+              onClick={() => onUpload(file.id)}>
+              Загрузить
+            </Button>)}
           {file.status !== "empty" && (
             <Button
               px="xs"

@@ -39,7 +39,7 @@ export function ReviseUpload({
               <Dropzone.Accept>
                 <TbDownload
                   style={{ width: rem(50), height: rem(50) }}
-                  // color={theme.colors.blue[6]}
+                  // color={theme.colors.blue[6]} 
                   stroke={1.5}
                 />
               </Dropzone.Accept>
