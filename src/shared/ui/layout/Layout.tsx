@@ -38,7 +38,7 @@ export function Layout() {
                 <Button
                   key={link}
                   variant="transparent"
-                  color={pathname === link ? "blue" : "white"}
+                  color={pathname === "blue"}
                   component={Link}
                   to={link}
                 >
