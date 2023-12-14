@@ -11,15 +11,16 @@ import {
   Title,
 } from "@mantine/core";
 import { PaymentsSystem } from "@/entities/payments-system";
+import { Scoreboard } from "@/entities/scoreboard";
 
 import styles from "./system-list.module.css";
 import { TbTrash } from "react-icons/tb";
 
 type SystemsListProps = {
-  systems: PaymentsSystem[];
+  systems: (PaymentsSystem | Scoreboard)[];
   isLoading?: boolean;
-  selected?: PaymentsSystem["id"] | null;
-  onSelect?: (id: PaymentsSystem["id"]) => void;
+  selected?: PaymentsSystem["id"] | "scoreboard" | null;
+  onSelect?: (id: PaymentsSystem["id"] | "scoreboard") => void;
   onDelete?: (id: PaymentsSystem["id"]) => void;
 };
 
@@ -38,43 +39,62 @@ export function SystemsList({
             <Loader />
           </Center>
         )}
-        {!isLoading && !systems.length && (
-          <Card mt="0.5rem" py="lg" ta="center">
-            <Text>Не найдено платежных систем</Text>
-          </Card>
-        )}
-        {!isLoading &&
-          systems.map((s) => (
+        {!isLoading && (
+          <>
             <Card
-              key={s.id}
               className={clsx(styles.systemCard, {
-                [styles.active]: s.id === selected,
+                [styles.active]: "scoreboard" === selected,
               })}
-              onClick={() => onSelect(s.id)}
+              onClick={() => onSelect("scoreboard")}
             >
               <Group justify="space-between" wrap="nowrap" gap="sm">
                 <div>
                   <Text lineClamp={1} component={Title} order={3} fz="xl">
-                    {s.name}
+                    Табло
                   </Text>
-                  <Text c="dimmed" size="sm">
-                    Количество файлов: {s.files.length}
-                  </Text>
+                  {/* <Text c="dimmed" size="sm">
+                      Количество файлов: {s.filesCount}
+                    </Text> */}
                 </div>
-                <Button
-                  variant="light"
-                  color="red"
-                  px="xs"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onDelete(s.id);
-                  }}
-                >
-                  <TbTrash size={20} />
-                </Button>
               </Group>
             </Card>
-          ))}
+            {(
+              systems.filter(
+                (s) => !!(s as PaymentsSystem).name
+              ) as PaymentsSystem[]
+            ).map((s) => (
+              <Card
+                key={s.id}
+                className={clsx(styles.systemCard, {
+                  [styles.active]: s.id === selected,
+                })}
+                onClick={() => onSelect(s.id)}
+              >
+                <Group justify="space-between" wrap="nowrap" gap="sm">
+                  <div>
+                    <Text lineClamp={1} component={Title} order={3} fz="xl">
+                      {s.name}
+                    </Text>
+                    <Text c="dimmed" size="sm">
+                      Количество файлов: {s.filesCount}
+                    </Text>
+                  </div>
+                  <Button
+                    variant="light"
+                    color="red"
+                    px="xs"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDelete(s.id);
+                    }}
+                  >
+                    <TbTrash size={20} />
+                  </Button>
+                </Group>
+              </Card>
+            ))}
+          </>
+        )}
       </Stack>
     </ScrollArea>
   );

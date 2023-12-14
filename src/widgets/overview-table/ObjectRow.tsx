@@ -81,11 +81,11 @@ export function ObjectRow({
 
 function getBadgeColor(status: FileStatus): DefaultMantineColor {
   switch (status) {
-    case "empty":
+    case FileStatus.Empty:
       return "gray";
-    case "uploaded":
+    case FileStatus.Uploaded:
       return "green";
-    case "error":
+    case FileStatus.Error:
       return "red";
     default:
       return "blue";

@@ -2,11 +2,11 @@ import { FileStatus } from "./model";
 
 export function getFileStatusTitle(status: FileStatus) {
   switch (status) {
-    case "empty":
+    case FileStatus.Empty:
       return "Не загружено";
-    case "uploaded":
+    case FileStatus.Uploaded:
       return "Загружено";
-    case "error":
+    case FileStatus.Error:
       return "Ошибка";
     default:
       return "Неизвестно";

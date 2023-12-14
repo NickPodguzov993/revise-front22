@@ -1,63 +1,61 @@
-import { useEffect, useState } from "react";
+import useSWR from "swr";
 import { Link, useParams } from "react-router-dom";
-import { Button, Group, Loader, Stack, Text } from "@mantine/core";
-import { TbArrowLeft } from "react-icons/tb";
-import { faker } from "@faker-js/faker"; // TODO: move to msw
+import { Button, Group, Stack, Text } from "@mantine/core";
+import { TbArrowLeft, TbChevronLeft, TbChevronRight } from "react-icons/tb";
+// import { faker } from "@faker-js/faker"; // TODO: move to msw
 
 import { getMonthDate } from "@/shared/utils";
+import { summaryUrl } from "@/entities/summary";
 import { SummaryTable } from "@/widgets/summary-table";
-import { SummaryRow } from "@/entities/summary";
+import { SummaryDTO } from "@/entities/summary/dto";
+import { useEffect, useState } from "react";
+import { notifications } from "@mantine/notifications";
 
-function makeData(length: number, date: Date): SummaryRow[] {
-  // TODO: move to msw
-  faker.seed(date.getTime());
-  return new Array(length).fill(null).map((_, idx) => {
-    return {
-      id: idx,
-      idField: faker.string.uuid(),
-      opType: ["withdraw", "deposit"][faker.number.int({ min: 0, max: 1 })],
-      project: faker.science.chemicalElement().name,
-      date: faker.date
-        .between({
-          from: date,
-          to: new Date(date).setMonth(date.getMonth() + 1),
-        })
-        .toLocaleDateString(),
-      amount: Number(faker.finance.amount()),
-      currency: ["RUB", "USD"][faker.number.int({ min: 0, max: 1 })],
-    };
-  });
-}
+// TODO: move to msw
+// function makeData(length: number, date: Date): SummaryRow[] {
+//   faker.seed(date.getTime());
+//   return new Array(length).fill(null).map((_, idx) => {
+//     return {
+//       id: idx,
+//       idField: faker.string.uuid(),
+//       opType: ["withdraw", "deposit"][faker.number.int({ min: 0, max: 1 })],
+//       project: faker.science.chemicalElement().name,
+//       date: faker.date
+//         .between({
+//           from: date,
+//           to: new Date(date).setMonth(date.getMonth() + 1),
+//         })
+//         .toLocaleDateString(),
+//       amount: Number(faker.finance.amount()),
+//       currency: ["RUB", "USD"][faker.number.int({ min: 0, max: 1 })],
+//     };
+//   });
+// }
 
 export function SummaryPage() {
   const params = useParams();
-  const [data, setData] = useState<SummaryRow[]>([]);
-  const [isProcessing, setIsProcessing] = useState(true);
   const date = new Date(params.date!);
+  const [page, setPage] = useState(0);
+  const [total, setTotal] = useState(0);
+  const { data, error, isLoading } = useSWR<SummaryDTO>(summaryUrl(date, page));
 
   useEffect(() => {
-    const id = setTimeout(() => {
-      setData(makeData(1000, date));
-      setIsProcessing(false);
-    }, 1000);
-    return () => {
-      clearTimeout(id);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    data && setTotal(data.result?.total || 0);
+    if (error || data?.error) {
+      notifications.show({
+        id: "summary-list",
+        title: "Результат сверки",
+        message: data?.error?.slice(0, 100) || "Что-то пошло не так...",
+        color: "red",
+        withCloseButton: true,
+        autoClose: 10_000,
+      });
+    }
+  }, [data, error]);
 
   return (
     <Stack h="100%" pb="md" justify="space-between">
-      {isProcessing ? (
-        <Stack my="auto">
-          <Loader style={{ alignSelf: "center" }} />
-          <Text ta="center">
-            Данные в процесе обработки, пожалуйста подождите
-          </Text>
-        </Stack>
-      ) : (
-        <SummaryTable loading={false} data={data} />
-      )}
+      <SummaryTable loading={isLoading} data={data?.result?.data || []} />
       <Group justify="space-between">
         <Button
           variant="light"
@@ -69,12 +67,34 @@ export function SummaryPage() {
           <TbArrowLeft />
           Назад
         </Button>
-        {!isProcessing && (
+        <Group>
+          <Button
+            p="sm"
+            size="md"
+            onClick={() => setPage((p) => p - 1)}
+            disabled={page === 0}
+          >
+            <TbChevronLeft />
+          </Button>
           <Text c="dimmed">
-            Загружено {~~(data.length / 2)} из {data.length} строк
+            {!total ? 0 : page + 1} из {total} страниц
           </Text>
-        )}
-        <Button size="md" disabled={isProcessing}>
+          <Button
+            p="sm"
+            size="md"
+            onClick={() => setPage((p) => p + 1)}
+            disabled={page + 1 >= total}
+          >
+            <TbChevronRight />
+          </Button>
+        </Group>
+        <Button
+          component="a"
+          size="md"
+          disabled={isLoading}
+          href={`/api/${getMonthDate(date)}/download`}
+          target="_blank"
+        >
           Скачать отчет
         </Button>
       </Group>

@@ -17,6 +17,11 @@
   align-items: center;
 }
 
+.headerNav {
+  display: flex;
+  gap: 1rem;
+}
+
 .title {
   a {
     text-decoration: none;

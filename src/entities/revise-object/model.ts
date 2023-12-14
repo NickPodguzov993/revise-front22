@@ -1,4 +1,8 @@
-export type FileStatus = "empty" | "uploaded" | "error";
+export enum FileStatus {
+  Empty = "NONE",
+  Uploaded = "OK",
+  Error = "NOOK",
+}
 
 export type ReviseFile = {
   id: number;

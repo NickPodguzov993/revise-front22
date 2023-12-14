@@ -4,9 +4,10 @@ import { createBrowserRouter } from "react-router-dom";
 import { Loader } from "@mantine/core";
 import { Layout } from "@/shared/ui";
 
-const OverviewPage = lazy(() => import("./overview"));
-const SystemsPage = lazy(() => import("./systems"));
+const HomePage = lazy(() => import("./home"));
+const SettingsPage = lazy(() => import("./settings"));
 const SummaryPage = lazy(() => import("./summary"));
+const LogsPage = lazy(() => import("./logs"));
 
 function PageLoader() {
   return <Loader style={{ alignSelf: "center" }} />;
@@ -20,15 +21,15 @@ export const router = createBrowserRouter([
         path: "",
         element: (
           <Suspense fallback={<PageLoader />}>
-            <OverviewPage />
+            <HomePage />
           </Suspense>
         ),
       },
       {
-        path: "/systems",
+        path: "/settings",
         element: (
           <Suspense fallback={<PageLoader />}>
-            <SystemsPage />
+            <SettingsPage />
           </Suspense>
         ),
       },
@@ -37,6 +38,14 @@ export const router = createBrowserRouter([
         element: (
           <Suspense fallback={<PageLoader />}>
             <SummaryPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/logs",
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <LogsPage />
           </Suspense>
         ),
       },

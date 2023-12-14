@@ -2,7 +2,7 @@
 
 Notes:
 
-- _All actions are performed for selected period_
+- _All actions with `date` param are performed for selected period_
 - _Trailing slashes just for beauty in Markdown_
 
 ### First-time
@@ -24,6 +24,6 @@ Notes:
 
 ## Questions
 
-- Is allowed to reupload files without deleting it?
+- Is allowed to reupload files without deleting it? - **not allowed**
 - How to handle `POST /api/revise/:date/` from multiple users simultaneously?
   - Avoiding of unnecessary recalculations (revise process)
