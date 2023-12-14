@@ -56,13 +56,13 @@ export function ObjectRow({
       </Table.Td>
       <Table.Td>
         <Group gap="sm">
-          {file.status == "empty" && (
+          {file.status == FileStatus.Empty && (
             <Button
               size="xs"
               onClick={() => onUpload(file.id)}>
               Загрузить
             </Button>)}
-          {file.status !== "empty" && (
+          {file.status !== FileStatus.Empty && (
             <Button
               px="xs"
               color="red"
