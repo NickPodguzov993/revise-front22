@@ -1,2 +1,4 @@
-node_modules
-dist
+.gitignore
+.gitlab-ci.yml
+DOCS.md
+README.md
