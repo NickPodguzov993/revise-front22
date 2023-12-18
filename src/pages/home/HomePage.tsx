@@ -1,6 +1,6 @@
 import useSWR from "swr";
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button, Group, Stack } from "@mantine/core";
 import { MonthPickerInput } from "@mantine/dates";
 import { notifications } from "@mantine/notifications";
@@ -19,12 +19,18 @@ import styles from "./home.module.css";
 
 export function HomePage() {
   const [date, setDate] = usePersistedDate();
-  const { data, error, isLoading } = useSWR<ReviseListDTO>(
+  const { data, error, isLoading} = useSWR<ReviseListDTO>(
     reviseObjectsUrl(date)
   );
+  const navigate = useNavigate();
   const reviseObjects = mapReviseObjects(data);
 
+
   useEffect(() => {
+
+    if (error?.code === 500) {
+      navigate('/');
+    }
     (error || data?.error) &&
       notifications.show({
         id: "revise-list",
