@@ -1,7 +1,7 @@
 import React from "react";
 import "./LoginForm.css";
 import { useNavigate } from 'react-router-dom';
-import { login } from "./entities/revise-object";
+import { login } from "./entities/revise-object/api";
 
 
 const LoginForm: React.FC = () => {
