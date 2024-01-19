@@ -13,6 +13,10 @@ const links = [
     title: "Сверка логов",
     link: "/logs",
   },
+  {
+    title: "Выход",
+    link: "/",
+  },
 ];
 
 export function Layout() {

@@ -16,10 +16,10 @@ export default function App() {
           {
                   <SWRConfig value={{ fetcher }}>
                       <MantineProvider defaultColorScheme="auto">
-                      <Notifications />
-                          <DatesProvider settings={{ locale: "ru" }}>
+                        <Notifications />
+                        <DatesProvider settings={{ locale: "ru" }}>
                               <RouterProvider router={router} />
-                          </DatesProvider>
+                        </DatesProvider>
                       </MantineProvider>
                   </SWRConfig>
           }
