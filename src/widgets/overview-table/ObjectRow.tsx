@@ -1,18 +1,6 @@
-import {
-  Badge,
-  Button,
-  DefaultMantineColor,
-  Group,
-  Table,
-  Tooltip,
-} from "@mantine/core";
-import { TbTrash } from "react-icons/tb";
-import {
-  FileStatus,
-  ReviseFile,
-  ReviseObject,
-  getFileStatusTitle,
-} from "@/entities/revise-object";
+import {Badge, Button, DefaultMantineColor, Group, Table, Tooltip,} from "@mantine/core";
+import {TbTrash} from "react-icons/tb";
+import {FileStatus, getFileStatusTitle, ReviseFile, ReviseObject,} from "@/entities/revise-object";
 
 import styles from "./object-row.module.css";
 

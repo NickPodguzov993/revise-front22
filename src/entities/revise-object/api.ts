@@ -24,3 +24,13 @@ export async function deleteReviseFile(fileId: ReviseFile["id"]) {
     method: "DELETE",
   });
 }
+
+export async function login(username: string, password: string) {
+  return fetch(`/api/user/token?username=${username}&password=${password}`, {
+    method: "POST",
+    headers: {
+      accept: 'application/json',
+    },
+  });
+}
+

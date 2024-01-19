@@ -7,11 +7,15 @@ import { ColorSchemeToggle } from "./ColorSchemeToggle";
 const links = [
   {
     title: "Главная",
-    link: "/",
+    link: "/home",
   },
   {
     title: "Сверка логов",
     link: "/logs",
+  },
+  {
+    title: "Выход",
+    link: "/",
   },
 ];
 
@@ -25,13 +29,16 @@ export function Layout() {
       // navbar={{ width: 300, breakpoint: "sm", collapsed: { mobile: !opened } }}
       className={styles.shell}
       padding="lg"
+      style={{
+        display: pathname === '/' ? 'none' : 'block'
+      }}
     >
       <AppShell.Header>
         <Container className={styles.header} size="xl">
           {/* <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" /> */}
           <div className={styles.headerNav}>
             <Title className={styles.title} order={1} size={24}>
-              <Link to="/">Сверка платежных систем</Link>
+              <Link to="/home">Сверка платежных систем</Link>
             </Title>
             <nav>
               {links.map(({ title, link }) => (

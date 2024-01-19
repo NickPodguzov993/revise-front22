@@ -3,6 +3,7 @@ import { Suspense, lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 import { Loader } from "@mantine/core";
 import { Layout } from "@/shared/ui";
+import LoginForm from "@/LoginForm";
 
 const HomePage = lazy(() => import("./home"));
 const SettingsPage = lazy(() => import("./settings"));
@@ -14,15 +15,32 @@ function PageLoader() {
 }
 
 export const router = createBrowserRouter([
+    {
+        path: "/",
+        element: (
+            <Suspense fallback={<PageLoader />}>
+                <LoginForm />
+            </Suspense>
+        ),
+    },
   {
     element: <Layout />,
     children: [
       {
-        path: "",
+        path: "/home",
         element: (
-          <Suspense fallback={<PageLoader />}>
-            <HomePage />
-          </Suspense>
+            <Suspense fallback={<PageLoader />}>
+              <HomePage />
+            </Suspense>
+        ),
+      },
+
+      {
+        path: "*",
+        element: (
+            <Suspense fallback={<PageLoader />}>
+              <HomePage />
+            </Suspense>
         ),
       },
       {
@@ -44,9 +62,9 @@ export const router = createBrowserRouter([
       {
         path: "/logs",
         element: (
-          <Suspense fallback={<PageLoader />}>
-            <LogsPage />
-          </Suspense>
+            <Suspense fallback={<PageLoader />}>
+              <LogsPage />
+            </Suspense>
         ),
       },
     ],
