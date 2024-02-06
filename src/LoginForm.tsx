@@ -9,7 +9,7 @@ const LoginForm: React.FC = () => {
 
     const [username, setUsername] = React.useState('');
     const [password, setPassword] = React.useState('');
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (/*event: React.FormEvent<HTMLFormElement>*/) => {
         event.preventDefault();
         console.log('username:', username);
         console.log('password:', password);
